@@ -10,9 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.example.galtzemach.saveit.UI.SalaryFragment;
+import com.example.galtzemach.saveit.UI.YearArrAdapter;
 import com.example.galtzemach.saveit.UI.dummy.DummyContent;
 
 import java.util.ArrayList;
@@ -20,27 +21,24 @@ import java.util.ArrayList;
 import static com.example.galtzemach.saveit.UI.SalaryFragment.OnListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener {
-    private final int CONTAINER_ID = R.id.NestedScrollView_main;
 
-    private TextView textView;
     private FloatingActionButton fab;
     private BottomNavigationView bottomNavigationView;
     private NestedScrollView nestedScrollView;
-    private ArrayList<String> arr;
+    private ListView listView;
+    private ArrayList<String> yearArrayList;
+    private String[] yearArr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        arr = new ArrayList<String>();
-        arr.add(0,"0");
-        arr.add(1,"1");
-        arr.add(2,"2");
+        fillArrays();
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.NestedScrollView_main);
-        textView = new TextView(this);
-        //textView = (TextView) findViewById(R.id.text_view);
+        nestedScrollView.setNestedScrollingEnabled(true);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                nestedScrollView.removeAllViews();
+                openFragmentListTest();
             }
         });
 
@@ -62,30 +60,54 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_warranty:
-                       // textView.setText(R.string.title_warranty);
-//                        textView.setText("Warranty");
-
                         nestedScrollView.removeAllViews();
-//                        nestedScrollView.addView(textView);
                         return true;
                     case R.id.navigation_monthly_bills:
-                        //textView.setText(R.string.title_monthly_bills);
-//                        MyListFragment listFragment = new MyListFragment();
                         nestedScrollView.removeAllViews();
-//                        getSupportFragmentManager().beginTransaction().add(CONTAINER_ID,listFragment).addToBackStack(null).commit();
                         return true;
                     case R.id.navigation_salary:
-                        //textView.setText(R.string.title_salary);
-                        nestedScrollView.removeAllViews();
-                        SalaryFragment salaryFragment = SalaryFragment.newInstance(1);
-                        getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), salaryFragment).commit();
-
+                        //nestedScrollView.removeAllViews();
+                        openSalaryList();
                         return true;
                 }
                 return false;
             }
         });
 
+    }
+
+    private void openSalaryList() {
+        openYearList();
+    }
+
+
+
+    private void fillArrays() {
+        yearArrayList = new ArrayList<>();
+        yearArrayList.add("2017");
+        yearArrayList.add("2016");
+        yearArrayList.add("2015");
+        yearArrayList.add("2014");
+        yearArrayList.add("2013");
+        yearArrayList.add("2012");
+        yearArrayList.add("2011");
+
+        yearArr = new String[]{"2017", "2016", "2015", "2014"};
+    }
+
+    private void openYearList() {
+//        nestedScrollView.removeAllViews();
+//        nestedScrollView.addView(listView);
+        listView = (ListView) findViewById(R.id.main_list_view);
+//        YearArrayListAdapter yearArrayListAdapter = new YearArrayListAdapter(this, yearArrayList);
+        YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
+        listView.setAdapter(yearArrAdapter);
+    }
+
+    private void openFragmentListTest() {
+        nestedScrollView.removeAllViews();
+        SalaryFragment salaryFragment = SalaryFragment.newInstance(1);
+        getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), salaryFragment).commit();
     }
 
 

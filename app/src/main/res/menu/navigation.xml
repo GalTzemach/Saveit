@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/navigation_salary"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_salary" />
+
+    <item
         android:id="@+id/navigation_warranty"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_warranty" />
@@ -11,9 +16,5 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_monthly_bills" />
 
-    <item
-        android:id="@+id/navigation_salary"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_salary" />
 
 </menu>
