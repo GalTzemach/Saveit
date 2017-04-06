@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.UI;
+package com.example.galtzemach.saveit.UI.dummy;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.galtzemach.saveit.R;
-import com.example.galtzemach.saveit.UI.SalaryFragment.OnListFragmentInteractionListener;
+import com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 import com.example.galtzemach.saveit.UI.dummy.DummyContent.DummyItem;
 
 import java.util.List;

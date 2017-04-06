@@ -10,8 +10,9 @@ public class Warranty {
     private DatePicker purchaseDate;
     private DatePicker expiryDate;
     private float cost;
-    private String[] refPhotoArr;
     private String notes;
+    private String[] refPhotoArr;
+
 
     public Warranty(Category category, int periodInMonths, DatePicker purchaseDate, DatePicker expiryDate, float cost, String[] refPhotoArr, String notes) {
         this.category = category;

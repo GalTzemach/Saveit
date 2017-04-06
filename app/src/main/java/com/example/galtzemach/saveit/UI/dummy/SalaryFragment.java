@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.UI;
+package com.example.galtzemach.saveit.UI.dummy;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.galtzemach.saveit.R;
-import com.example.galtzemach.saveit.UI.dummy.DummyContent;
 import com.example.galtzemach.saveit.UI.dummy.DummyContent.DummyItem;
 
 /**

@@ -100,4 +100,7 @@
     <string name="title_warranty">Warranty</string>
     <string name="title_monthly_bills">Monthly Bills</string>
     <string name="title_salary">Salary</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
