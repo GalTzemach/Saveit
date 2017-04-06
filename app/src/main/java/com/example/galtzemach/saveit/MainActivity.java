@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,11 +63,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//                currentMode = currentMode == mode.pull ? mode.push : mode.pull;
-                Log.d("galllllllllllllllll", "fab pressed");
-                Log.d("galllllllllllllllll", "mode:" + currentMode + " ,category: " + currentCatecory + "\n");
                 switch (currentCatecory){
                     case salary:
                         if (currentMode == Mode.pushh) {
@@ -153,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private void initialDefault() {
         currentMode = Mode.pull;
         currentCatecory = Category.salary;
-        Log.d("galllllllllllllllll", "mode:" + currentMode + " ,category: " + currentCatecory + "\n");
     }
 
     private void openAddSalaryFragment() {
