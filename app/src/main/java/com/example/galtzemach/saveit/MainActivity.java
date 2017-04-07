@@ -1,5 +1,6 @@
 package com.example.galtzemach.saveit;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +22,26 @@ import com.example.galtzemach.saveit.UI.YearArrAdapter;
 import com.example.galtzemach.saveit.UI.YearArrayListAdapter;
 import com.example.galtzemach.saveit.UI.dummy.DummyContent;
 import com.example.galtzemach.saveit.UI.dummy.SalaryFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener {
+
+    private final String TAG = this.getClass().toString();
+
+    // create FireBase auth feature
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    // create FireBaseDatabase feature + specific userRef
+    private FirebaseDatabase mDataBase;
+    private DatabaseReference mUserRef;
 
     private enum Category {salary, warranty, monthlyBills};
     private Category currentCatecory;
@@ -43,12 +59,39 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private String[] yearArr;
     private String[] emptyArr = new String[0];
 
+    private String user_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        mDataBase = FirebaseDatabase.getInstance();
+
+        // check if user sign in
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    user_id = mAuth.getCurrentUser().getUid();
+                    mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                    Intent LogInIntent = new Intent(MainActivity.this, LogInActivity.class);
+                    LogInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(LogInIntent);
+
+                }
+            }
+        };
         fillArrays();
         listView = (ListView) findViewById(R.id.main_list_view);
         nestedScrollView = (NestedScrollView) findViewById(R.id.NestedScrollView_main);
@@ -144,6 +187,24 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         openSalaryList();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(mAuthListener);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+
+    }
+
     private void initialDefault() {
         currentMode = Mode.pull;
         currentCatecory = Category.salary;
@@ -228,13 +289,28 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        // log out action pressed
+        if (id == R.id.action_logOut) {
+
+            logOutUser();
+            return true;
+
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
+
+
         return super.onOptionsItemSelected(item);
     }
 
+    private void logOutUser() {
+
+        mAuth.signOut();
+
+    }
 
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
