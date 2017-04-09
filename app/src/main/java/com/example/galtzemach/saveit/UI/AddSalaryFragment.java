@@ -14,7 +14,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
+import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +39,7 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link AddSalaryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddSalaryFragment extends Fragment {
+public class AddSalaryFragment extends Fragment implements DataReadyListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,13 +70,15 @@ public class AddSalaryFragment extends Fragment {
     private Button mCreateSalaryBtn;
     private ImageButton mAddImageBtn;
 
+
     private Salary tempSalary;
 
     private ArrayList<Uri> uploadUriArr;
-    private ArrayList<Uri> downloadUriArr;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALLERY_INTENT = 2;
+
+    private DataBase db;
 
     public AddSalaryFragment() {
         // Required empty public constructor
@@ -112,9 +117,12 @@ public class AddSalaryFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         uploadUriArr = new ArrayList<>();
-        downloadUriArr = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(getContext());
+
+        //
+        db = new DataBase();
+        db.registerListener(this);
 
     }
 
@@ -125,8 +133,39 @@ public class AddSalaryFragment extends Fragment {
        ConstraintLayout constraintLayout = (ConstraintLayout) inflater.inflate(R.layout.fragment_add_salary, container, false);
 
         // create correct specific user ref
-        String user_id = mAuth.getCurrentUser().getUid();
+        final String user_id = mAuth.getCurrentUser().getUid();
         mUserRef = mDataBase.getReference().child("Users").child(user_id); ///.getRef();
+
+
+        Button mGetEmployersBtn = (Button) constraintLayout.findViewById(R.id.getEmployersBtn);
+        mGetEmployersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                db.getEmployersPerUser(user_id);
+            }
+        });
+
+        Button mGetYearsBtn = (Button) constraintLayout.findViewById(R.id.getYearsBtn);
+        mGetYearsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                db.getYearsPerUserAndEmloyer(user_id, "Intel");
+
+            }
+        });
+
+        Button mGetSalarysBtn = (Button) constraintLayout.findViewById(R.id.getSalaryBtn);
+        mGetSalarysBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                db.getSalaryPerUserAndYear(user_id, 2016);
+
+            }
+        });
+
 
         mAddImageBtn = (ImageButton) constraintLayout.findViewById(R.id.imageButtonAddImage);
         mAddImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -149,10 +188,14 @@ public class AddSalaryFragment extends Fragment {
                 mProgressDialog.setMessage("create new salary item...");
                 mProgressDialog.show();
 
-                createNewSalary();
+                //tempSalary = new Salary("Intel", 2017, 01, 20000, 15000, "Good place");
+                tempSalary = new Salary("IBM", 2016, 02, 10000, 8000, "Better place");
+
+                db.createNewSalary(user_id, tempSalary, uploadUriArr);
+                /// clear upload arr ??
 
 
-
+                //createNewSalary();
             }
         });
 
@@ -175,8 +218,6 @@ public class AddSalaryFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    downloadUriArr.add(taskSnapshot.getDownloadUrl());
-
                     String tempUri = taskSnapshot.getDownloadUrl().toString();
 
                     newSalaryRef.child("downloadUri").push().setValue(tempUri);
@@ -191,7 +232,9 @@ public class AddSalaryFragment extends Fragment {
             });
         }
         // create new salary object and save it on data base
-        tempSalary = new Salary("Intel", 2017, 01, 20000, 15000, "Good place");
+
+        //tempSalary = new Salary("Intel", 2017, 01, 20000, 15000, "Good place");
+        tempSalary = new Salary("IBM", 2016, 02, 10000, 8000, "Better place");
         newSalaryRef.setValue(tempSalary);
 
     }
@@ -233,6 +276,68 @@ public class AddSalaryFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onAddSalaryComplete() {
+
+        mProgressDialog.dismiss();
+        Toast.makeText(getContext(), "Photo upload finished", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+        Toast.makeText(getContext(), "salary fragment: " + employersList.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<Integer> yearsList) {
+
+        Toast.makeText(getContext(), "salary fragment: " + yearsList.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+
+        Toast.makeText(getContext(), "salary fragment: " + salaryList.toString(), Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onAddWarrantyComplete() {
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<Integer> yearsList) {
+
+    }
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+
+    }
+
+    @Override
+    public void onAddMonthlyBillsComplete() {
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> CategoryList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<Integer> yearsList) {
+
+    }
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+
     }
 
     /**

@@ -16,9 +16,9 @@ public class YearArrAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] yearsArr;
 
-
     public YearArrAdapter(Activity context, String[] yearsArr) {
         super(context, R.layout.year_list, yearsArr);
+
         this.context = context;
         this.yearsArr = yearsArr;
     }

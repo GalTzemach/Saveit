@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private Category currentCatecory;
     private enum Mode {pull, pushh};
     private Mode currentMode;
+
+
     private FloatingActionButton fab;
     private BottomNavigationView bottomNavigationView;
     private NestedScrollView nestedScrollView;
@@ -60,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private String[] emptyArr = new String[0];
 
     private String user_id;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +235,15 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
         listView.setAdapter(yearArrAdapter);
     }
+
+    private void openEmloyersList() {
+        nestedScrollView.removeAllViews();
+        nestedScrollView.addView(listView);
+
+        YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
+        listView.setAdapter(yearArrAdapter);
+    }
+
 
     private void openWarrantyList() {
         nestedScrollView.removeAllViews();

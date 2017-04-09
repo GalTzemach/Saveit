@@ -1,5 +1,7 @@
 package com.example.galtzemach.saveit.BL;
 
+import java.util.ArrayList;
+
 public class Salary {
 
     private String employer;
@@ -8,6 +10,8 @@ public class Salary {
     private float grossRevenue;
     private float netRevenue;
     private String notes;
+
+    private ArrayList<String> downloadUriArr;
 
     public Salary() {
     }
@@ -69,6 +73,14 @@ public class Salary {
         this.notes = notes;
     }
 
+    public ArrayList<String> getDownloadUriArr() {
+        return downloadUriArr;
+    }
+
+    public void setDownloadUriArr(ArrayList<String> downloadUriArr) {
+        this.downloadUriArr = downloadUriArr;
+    }
+
     @Override
     public String toString() {
         return "Salary{" +
@@ -78,6 +90,7 @@ public class Salary {
                 ", grossRevenue=" + grossRevenue +
                 ", netRevenue=" + netRevenue +
                 ", notes='" + notes + '\'' +
+                ", downloadUriArr=" + downloadUriArr +
                 '}';
     }
 

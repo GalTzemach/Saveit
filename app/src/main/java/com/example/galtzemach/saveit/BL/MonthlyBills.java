@@ -1,16 +1,20 @@
 package com.example.galtzemach.saveit.BL;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MonthlyBills {
 
     private enum Category {ab, bc, cd}
     private Category category;
+
     private int year;
     private int month;
     private float sum;
     private String notes;
     private String[] refPhotoArr;
+
+    private ArrayList<String> downloadUriArr;
 
     public MonthlyBills() {
     }
@@ -24,8 +28,8 @@ public class MonthlyBills {
         this.notes = notes;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getCategory() {
+        return category.name();
     }
 
     public void setCategory(Category category) {
@@ -72,6 +76,14 @@ public class MonthlyBills {
         this.refPhotoArr = refPhotoArr;
     }
 
+    public ArrayList<String> getDownloadUriArr() {
+        return downloadUriArr;
+    }
+
+    public void setDownloadUriArr(ArrayList<String> downloadUriArr) {
+        this.downloadUriArr = downloadUriArr;
+    }
+
     @Override
     public String toString() {
         return "MonthlyBills{" +
@@ -81,7 +93,9 @@ public class MonthlyBills {
                 ", sum=" + sum +
                 ", notes='" + notes + '\'' +
                 ", refPhotoArr=" + Arrays.toString(refPhotoArr) +
+                ", downloadUriArr=" + downloadUriArr +
                 '}';
     }
+
 
 }
