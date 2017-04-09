@@ -201,7 +201,7 @@ public class AddSalaryFragment extends Fragment {
             netRevenueField = Float.parseFloat(netRevenue.getText().toString());
 
         //notes
-        EditText notes = (EditText) view.findViewById(R.id.s_notes);
+        EditText notes = (EditText) view.findViewById(R.id.s_row_notes);
 
         Calendar calendar = Calendar.getInstance();
 //        Toast.makeText(getContext(), calendar.get(Calendar.DATE) + "", Toast.LENGTH_LONG).show();

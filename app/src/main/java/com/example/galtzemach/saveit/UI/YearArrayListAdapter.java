@@ -19,7 +19,7 @@ public class YearArrayListAdapter extends ArrayAdapter{
     private final ArrayList<String> yearsArr;
 
     public YearArrayListAdapter(Activity context, ArrayList<String> yearsArr) {
-        super(context, R.layout.year_list, yearsArr);
+        super(context, R.layout.year_list_old, yearsArr);
         this.context = context;
         this.yearsArr = yearsArr;
     }
@@ -28,7 +28,7 @@ public class YearArrayListAdapter extends ArrayAdapter{
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.year_list, null, true);
+        View rowView = inflater.inflate(R.layout.year_list_old, null, true);
         TextView yearTextView = (TextView) rowView.findViewById(R.id.year_txt);
         yearTextView.setText(yearsArr.get(position));
         return rowView;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/s_row_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Empty.."
+        android:textSize="@dimen/first_row_list_view" />
+
+    <TextView
+        android:id="@+id/s_row_gross_net"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/second_row_list_view" />
+
+    <TextView
+        android:id="@+id/s_row_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -46,12 +46,15 @@ public class AddWarrantyFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private View view;
+
     private Warranty.Category category;
+    private String name = null;
     private Date purchaseDate;
     private Date expireDate;
     private int months = -1;
     private float cost = -1;
     private String notes;
+    private EditText nameEditText;
     private EditText purchaseDateEditText;
     private Button addButton;
     private Button removeButton;
@@ -101,6 +104,7 @@ public class AddWarrantyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_add_warranty, container, false);
 
         //get fields
+        nameEditText = (EditText) view.findViewById(R.id.w__row_name);
         purchaseDateEditText = (EditText) view.findViewById(R.id.w_purchase_date);
         addButton = (Button) view.findViewById(R.id.w_add_photos);
         removeButton = (Button) view.findViewById(R.id.w_remove_photos);
@@ -202,6 +206,16 @@ public class AddWarrantyFragment extends Fragment {
         //category
         category = (Warranty.Category) categorySpinner.getSelectedItem();
 
+
+        //name
+        if (nameEditText.getText().length() != 0)
+            name = nameEditText.getText().toString();
+
+        if(name == null) {
+            nameEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
         //purchaseDate
         if(purchaseDateEditText.getText().length() == 0){
             purchaseDateEditText.setHintTextColor(Color.RED);
@@ -246,7 +260,7 @@ public class AddWarrantyFragment extends Fragment {
                 expireDate.setMonth((expireDate.getMonth() + (months % 12)) % 11);
             }
         }
-        Warranty newWarranty = new Warranty(category, months, purchaseDate, expireDate, cost, null, notes);
+        Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, null, notes);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

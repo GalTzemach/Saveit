@@ -6,6 +6,7 @@ public class Warranty {
 
     public enum Category {a, b, c, d, e, f, g, h}
     private Category category;
+    private String name;
     private int periodInMonths;
     private Date purchaseDate;
     private Date expiryDate;
@@ -14,8 +15,9 @@ public class Warranty {
     private String[] refPhotoArr;
 
 
-    public Warranty(Category category, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
+    public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
         this.category = category;
+        this.name = name;
         this.periodInMonths = periodInMonths;
         this.purchaseDate = purchaseDate;
         this.expiryDate = expiryDate;

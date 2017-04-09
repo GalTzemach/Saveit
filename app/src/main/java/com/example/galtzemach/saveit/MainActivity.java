@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.example.galtzemach.saveit.BL.YearAdapter;
 import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment;
 import com.example.galtzemach.saveit.UI.AddSalaryFragment;
 import com.example.galtzemach.saveit.UI.AddWarrantyFragment;
@@ -170,8 +171,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private void openSalaryList() {
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
-        listView.setAdapter(yearArrAdapter);
+//        YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
+        YearAdapter yearAdapter = new YearAdapter(this, yearArrayList);
+        listView.setAdapter(yearAdapter);
     }
 
     private void openWarrantyList() {
