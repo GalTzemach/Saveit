@@ -19,9 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".UI.BottomNavigation"
-            android:label="@string/title_activity_bottom_navigation"></activity>
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".LogInActivity"></activity>
+
     </application>
 
 </manifest>
