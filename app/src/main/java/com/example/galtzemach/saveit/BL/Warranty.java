@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class Warranty {
 
     public enum Category {a, b, c, d, e, f, g, h}
-    private enum Category {salary, monthlyBills, warranty}
-
     private Category category;
     private String name;
     private int periodInMonths;
@@ -23,7 +21,6 @@ public class Warranty {
     public Warranty() {
     }
 
-    public Warranty(Category category, int periodInMonths, DatePicker purchaseDate, DatePicker expiryDate, float cost, String notes) {
     public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
         this.category = category;
         this.name = name;
@@ -51,19 +48,19 @@ public class Warranty {
         this.periodInMonths = periodInMonths;
     }
 
-    public DatePicker getPurchaseDate() {
+    public Date getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(DatePicker purchaseDate) {
+    public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 
-    public DatePicker getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(DatePicker expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,15 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
-import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
@@ -38,11 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_OK;
-
 import java.util.Calendar;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.galtzemach.saveit.R.layout.fragment_add_salary;
 
 /**
@@ -156,6 +150,10 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         //Inflate the layout for this fragment
         view = inflater.inflate(fragment_add_salary, container, false);
 
+        /// create correct specific user ref
+        String user_id = mAuth.getCurrentUser().getUid();
+        mUserRef = mDataBase.getReference().child("Users").child(user_id); ///.getRef();
+
         //removeAllPhotosButton
         final Button removeAllPhotosButton = (Button) view.findViewById(R.id.s_remove_photos);
 
@@ -236,7 +234,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
     private void createSalaryObject() {
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
-        Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, null, notesField);
+        Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
     }
 
     private boolean checkAllFields() {
@@ -315,81 +313,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         return resBool;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-       ConstraintLayout constraintLayout = (ConstraintLayout) inflater.inflate(R.layout.fragment_add_salary, container, false);
-
-        // create correct specific user ref
-        final String user_id = mAuth.getCurrentUser().getUid();
-        mUserRef = mDataBase.getReference().child("Users").child(user_id); ///.getRef();
-
-
-        Button mGetEmployersBtn = (Button) constraintLayout.findViewById(R.id.getEmployersBtn);
-        mGetEmployersBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                db.getEmployersPerUser(user_id);
-            }
-        });
-
-        Button mGetYearsBtn = (Button) constraintLayout.findViewById(R.id.getYearsBtn);
-        mGetYearsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                db.getYearsPerUserAndEmloyer(user_id, "Intel");
-
-            }
-        });
-
-        Button mGetSalarysBtn = (Button) constraintLayout.findViewById(R.id.getSalaryBtn);
-        mGetSalarysBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                db.getSalaryPerUserAndYear(user_id, 2016);
-
-            }
-        });
-
-
-        mAddImageBtn = (ImageButton) constraintLayout.findViewById(R.id.imageButtonAddImage);
-        mAddImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // take image from gallery
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_INTENT);
-
-            }
-        });
-
-        mCreateSalaryBtn = (Button) constraintLayout.findViewById(R.id.createSalarybtn);
-        mCreateSalaryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mProgressDialog.setMessage("create new salary item...");
-                mProgressDialog.show();
-
-                //tempSalary = new Salary("Intel", 2017, 01, 20000, 15000, "Good place");
-                tempSalary = new Salary("IBM", 2016, 02, 10000, 8000, "Better place");
-
-                db.createNewSalary(user_id, tempSalary, uploadUriArr);
-                /// clear upload arr ??
-
-
-                //createNewSalary();
-            }
-        });
-
-        return constraintLayout;
-
-    }
 
     private void createNewSalary() {
 
