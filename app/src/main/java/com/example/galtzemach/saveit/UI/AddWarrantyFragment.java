@@ -1,14 +1,29 @@
 package com.example.galtzemach.saveit.UI;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.R;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +44,24 @@ public class AddWarrantyFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private View view;
+    private Warranty.Category category;
+    private Date purchaseDate;
+    private Date expireDate;
+    private int months = -1;
+    private float cost = -1;
+    private String notes;
+    private EditText purchaseDateEditText;
+    private Button addButton;
+    private Button removeButton;
+    private TextView numAddedTextView;
+    private Button okButton;
+    private Spinner categorySpinner;
+    private EditText monthsEditText;
+    private EditText costEditText;
+    private EditText notesEditText;
+
 
     public AddWarrantyFragment() {
         // Required empty public constructor
@@ -65,7 +98,155 @@ public class AddWarrantyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_warranty, container, false);
+        view = inflater.inflate(R.layout.fragment_add_warranty, container, false);
+
+        //get fields
+        purchaseDateEditText = (EditText) view.findViewById(R.id.w_purchase_date);
+        addButton = (Button) view.findViewById(R.id.w_add_photos);
+        removeButton = (Button) view.findViewById(R.id.w_remove_photos);
+        numAddedTextView = (TextView) view.findViewById(R.id.w_num_added_photos);
+        okButton = (Button) view.findViewById(R.id.w_ok);
+        categorySpinner = (Spinner) view.findViewById(R.id.w_category);
+        monthsEditText = (EditText) view.findViewById(R.id.w_period_in_months);
+        costEditText = (EditText) view.findViewById(R.id.w_cost);
+        notesEditText = (EditText) view.findViewById(R.id.w_nots);
+
+        categorySpinner.setAdapter(new ArrayAdapter<Warranty.Category>(getContext(), android.R.layout.simple_spinner_item, Warranty.Category.values()));
+
+        //get now date
+        Calendar calendar = Calendar.getInstance();
+        final int setY = calendar.get(Calendar.YEAR);
+        final int setM = calendar.get(Calendar.MONTH);
+        final int setD = calendar.get(Calendar.DAY_OF_MONTH);
+
+        //purchaseDateEditText
+        final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int y, int m, int d) {
+                Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+                purchaseDate = new Date(y,m,d);
+                purchaseDateEditText.setText(y+"/"+(m+1)+"/"+d);
+            }
+        };
+        purchaseDateEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b == true) {
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), myDateListener, setY, setM, setD);
+                    datePickerDialog.show();
+                }
+            }
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                //open addPhotoPopupMenu
+                final PopupMenu addPhotoPopupMenu = new PopupMenu(getContext(), view);
+                addPhotoPopupMenu.getMenuInflater().inflate(R.menu.add_photo_options, addPhotoPopupMenu.getMenu());
+                addPhotoPopupMenu.show();
+                addPhotoPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        if (menuItem.getItemId() == R.id.from_camera) {//from camera
+//                            photoFromCamera();
+                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(0).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                        } else { //from gallery
+//                            photoFromGallery();
+                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(1).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                        }
+
+                        ///if size of arr photos >= 1
+                        numAddedTextView.setVisibility(View.VISIBLE);
+                        numAddedTextView.setText("X Photo added");
+                        removeButton.setVisibility(View.VISIBLE);
+
+
+                        ///just if some photo added
+                        addButton.setText("Add more photos");
+
+                        return true;
+                    }
+                });
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addButton.setText("Add photo");
+                numAddedTextView.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.INVISIBLE);
+                ///remove photos
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkAllFields() ){
+                    createWarrantyObject();
+//                    send new salary to db ///
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private boolean checkAllFields() {
+        boolean resBool = true;
+
+        //category
+        category = (Warranty.Category) categorySpinner.getSelectedItem();
+
+        //purchaseDate
+        if(purchaseDateEditText.getText().length() == 0){
+            purchaseDateEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
+        //months
+        if(monthsEditText.getText().length() != 0)
+            months = Integer.parseInt(monthsEditText.getText().toString());
+
+        if(months == -1){
+            monthsEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
+
+        //cost
+        if(costEditText.getText().length() != 0)
+            cost = Float.parseFloat(costEditText.getText().toString());
+
+        if(cost == -1){
+            costEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
+        notes = notesEditText.getText().toString();
+
+        return resBool;
+    }
+
+    private void createWarrantyObject() {
+        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+        expireDate = purchaseDate;
+        if(months != 0) {
+            if (expireDate.getMonth() + months < 11) {
+                expireDate.setMonth(expireDate.getMonth() + months);
+            } else if ((months % 12) + expireDate.getMonth() <= 11) {
+                expireDate.setYear(expireDate.getYear() + (months / 12));
+                expireDate.setMonth(expireDate.getMonth() + (months % 12));
+            } else {
+                expireDate.setYear(expireDate.getYear() + (months / 12) + 1);
+                expireDate.setMonth((expireDate.getMonth() + (months % 12)) % 11);
+            }
+        }
+        Warranty newWarranty = new Warranty(category, months, purchaseDate, expireDate, cost, null, notes);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

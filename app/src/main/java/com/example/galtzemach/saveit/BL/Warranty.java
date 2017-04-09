@@ -1,20 +1,20 @@
 package com.example.galtzemach.saveit.BL;
 
-import android.widget.DatePicker;
+import java.util.Date;
 
 public class Warranty {
 
-    private enum Category {salary, monthlyBills, warranty}
+    public enum Category {a, b, c, d, e, f, g, h}
     private Category category;
     private int periodInMonths;
-    private DatePicker purchaseDate;
-    private DatePicker expiryDate;
+    private Date purchaseDate;
+    private Date expiryDate;
     private float cost;
     private String notes;
     private String[] refPhotoArr;
 
 
-    public Warranty(Category category, int periodInMonths, DatePicker purchaseDate, DatePicker expiryDate, float cost, String[] refPhotoArr, String notes) {
+    public Warranty(Category category, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
         this.category = category;
         this.periodInMonths = periodInMonths;
         this.purchaseDate = purchaseDate;

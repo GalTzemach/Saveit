@@ -1,14 +1,26 @@
 package com.example.galtzemach.saveit.UI;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.R;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +41,24 @@ public class AddMonthlyBillsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private View view;
+
+    private MonthlyBills.Category category;
+    private int year = -1;
+    private int month = -1;
+    private float sum = -1;
+    private String notes;
+
+    private Button addButton;
+    private Button removeButton;
+    private Button okButton;
+    private Spinner categorySpinner;
+    private EditText yearEditText;
+    private Spinner monthSpinner;
+    private EditText sumEditText;
+    private EditText notesEditText;
+    private TextView numAddedTextView;
 
     public AddMonthlyBillsFragment() {
         // Required empty public constructor
@@ -65,7 +95,127 @@ public class AddMonthlyBillsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_monthly_bills, container, false);
+        view = inflater.inflate(R.layout.fragment_add_monthly_bills, container, false);
+
+        //get fields
+        categorySpinner = (Spinner) view.findViewById(R.id.m_category_spinner);
+        yearEditText = (EditText) view.findViewById(R.id.m_year);
+        monthSpinner = (Spinner) view.findViewById(R.id.m_month_spinner);
+        sumEditText = (EditText) view.findViewById(R.id.m_sum);
+        notesEditText = (EditText) view.findViewById(R.id.m_notes);
+        addButton = (Button) view.findViewById(R.id.m_add);
+        removeButton = (Button) view.findViewById(R.id.m_remove);
+        numAddedTextView = (TextView) view.findViewById(R.id.m_num_photos_added);
+        okButton = (Button) view.findViewById(R.id.m_ok);
+
+
+        categorySpinner.setAdapter(new ArrayAdapter<MonthlyBills.Category>(getContext(), android.R.layout.simple_spinner_item, MonthlyBills.Category.values()));
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.months_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        monthSpinner.setAdapter(adapter);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                //open addPhotoPopupMenu
+                final PopupMenu addPhotoPopupMenu = new PopupMenu(getContext(), view);
+                addPhotoPopupMenu.getMenuInflater().inflate(R.menu.add_photo_options, addPhotoPopupMenu.getMenu());
+                addPhotoPopupMenu.show();
+                addPhotoPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        if (menuItem.getItemId() == R.id.from_camera) {//from camera
+//                            photoFromCamera();
+                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(0).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                        } else { //from gallery
+//                            photoFromGallery();
+                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(1).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                        }
+
+                        ///if size of arr photos >= 1
+                        numAddedTextView.setVisibility(View.VISIBLE);
+                        numAddedTextView.setText("X Photo added");
+                        removeButton.setVisibility(View.VISIBLE);
+
+
+                        ///just if some photo added
+                        addButton.setText("Add more photos");
+
+                        return true;
+                    }
+                });
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addButton.setText("Add photo");
+                numAddedTextView.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.INVISIBLE);
+                ///remove photos
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkAllFields() ){
+                    createMonthlyBillsObject();
+//                    send new salary to db ///
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private void createMonthlyBillsObject() {
+        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+        MonthlyBills newMonthlyBills = new MonthlyBills(category, year, month, sum, null, notes);
+    }
+
+    private boolean checkAllFields() {
+        boolean resBool = true;
+
+        //category
+        category = (MonthlyBills.Category) categorySpinner.getSelectedItem();
+
+        //year
+        Calendar calendar = Calendar.getInstance();
+
+        if (yearEditText.getText().length() != 0)
+            year = Integer.parseInt(yearEditText.getText().toString());
+
+        if (year == -1) {
+            yearEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        } else if (year > calendar.get(Calendar.YEAR) || year < calendar.get(Calendar.YEAR) - 120) {
+            yearEditText.setTextColor(Color.RED);
+            resBool = false;
+        } else {
+            yearEditText.setTextColor(Color.BLACK);
+        }
+
+        //month
+        month = Integer.parseInt(monthSpinner.getSelectedItem().toString());
+
+        //sum
+        if(sumEditText.getText().length() != 0)
+            sum = Float.parseFloat(sumEditText.getText().toString());
+
+        if(sum == -1){
+            sumEditText.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
+        //notes
+        notes = notesEditText.getText().toString();
+
+        return resBool;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

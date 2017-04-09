@@ -3,82 +3,129 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="100dp"
     tools:context="com.example.galtzemach.saveit.UI.AddSalaryFragment"
-    tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:id="@+id/textView3"
+    <Button
+        android:id="@+id/s_remove_photos"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:text="Add salary"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:text="Remove all photos"
+        android:textColor="@color/Red"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@+id/s_add_photos"
+        app:layout_constraintTop_toBottomOf="@+id/s_net_revenue" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/s_employer"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="Employer"
         android:inputType="textPersonName"
-        android:text="Employer"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/s_year"
         android:layout_width="178dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="date"
+        android:hint="Year"
+        android:inputType="number"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/s_employer" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/s_month_spinner"
         android:layout_width="92dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/editText2"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintLeft_toRightOf="@+id/s_year"
+        app:layout_constraintTop_toBottomOf="@+id/s_employer" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/s_net_revenue"
         android:layout_width="148dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Net revenue"
-        android:inputType="number"
-        app:layout_constraintLeft_toRightOf="@+id/editText4"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        android:inputType="number|numberDecimal"
+        app:layout_constraintLeft_toRightOf="@+id/s_gross_revenue"
+        app:layout_constraintTop_toBottomOf="@+id/s_year" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/s_gross_revenue"
         android:layout_width="148dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Groos revenue"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/s_year" />
+
+    <Button
+        android:id="@+id/s_ok"
+        android:layout_width="169dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Ok"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_notes" />
+
+    <Button
+        android:id="@+id/s_add_photos"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Add photo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_gross_revenue" />
+
+    <TextView
+        android:id="@+id/s_num_added_photos"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:cursorVisible="false"
+        android:textColor="@color/Green"
+        app:layout_constraintLeft_toLeftOf="@+id/s_add_photos"
+        app:layout_constraintRight_toRightOf="@+id/s_add_photos"
+        app:layout_constraintTop_toBottomOf="@+id/s_add_photos" />
+
+    <EditText
+        android:id="@+id/s_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Notes"
+        android:inputType="textPersonName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_num_added_photos" />
 
 </android.support.constraint.ConstraintLayout>

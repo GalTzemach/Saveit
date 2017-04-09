@@ -243,6 +243,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+//        final Button button = (Button) findViewById(R.id.ok_butten);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
     }
 }
