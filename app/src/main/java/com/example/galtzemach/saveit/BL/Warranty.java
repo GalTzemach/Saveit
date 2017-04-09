@@ -1,19 +1,22 @@
 package com.example.galtzemach.saveit.BL;
 
-import android.widget.DatePicker;
+import java.util.Date;
 
 import java.util.ArrayList;
 
 public class Warranty {
 
+    public enum Category {a, b, c, d, e, f, g, h}
     private enum Category {salary, monthlyBills, warranty}
 
     private Category category;
+    private String name;
     private int periodInMonths;
-    private DatePicker purchaseDate;
-    private DatePicker expiryDate;
+    private Date purchaseDate;
+    private Date expiryDate;
     private float cost;
     private String notes;
+    private String[] refPhotoArr;
 
     private ArrayList<String> downloadUriArr;
 
@@ -21,11 +24,14 @@ public class Warranty {
     }
 
     public Warranty(Category category, int periodInMonths, DatePicker purchaseDate, DatePicker expiryDate, float cost, String notes) {
+    public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
         this.category = category;
+        this.name = name;
         this.periodInMonths = periodInMonths;
         this.purchaseDate = purchaseDate;
         this.expiryDate = expiryDate;
         this.cost = cost;
+        this.refPhotoArr = refPhotoArr;
         this.notes = notes;
     }
 

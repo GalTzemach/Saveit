@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class MonthlyBills {
 
-    private enum Category {ab, bc, cd}
+    public enum Category {ab, bc, cd}
     private Category category;
 
     private int year;
