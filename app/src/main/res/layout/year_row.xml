@@ -8,14 +8,7 @@
         android:id="@+id/y_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="empty.."
+        android:text="TextView"
         android:textSize="@dimen/first_row_list_view" />
 
-    <TextView
-        android:id="@+id/y_num_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="X"
-        android:textDirection="anyRtl"
-        android:gravity="right"/>
 </LinearLayout>

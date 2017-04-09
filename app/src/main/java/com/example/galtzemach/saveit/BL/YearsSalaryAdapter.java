@@ -12,13 +12,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class YearAdapter extends ArrayAdapter {
+public class YearsSalaryAdapter extends ArrayAdapter {
 
     private final Activity context;
     private final ArrayList<String> yearsArrayList;
 
 
-    public YearAdapter(Activity context, ArrayList<String> yearArrayList) {
+    public YearsSalaryAdapter(Activity context, ArrayList<String> yearArrayList) {
         super(context, R.layout.year_row, yearArrayList);
         this.context = context;
         this.yearsArrayList = yearArrayList;
@@ -32,9 +32,9 @@ public class YearAdapter extends ArrayAdapter {
         TextView yearTextView = (TextView) rowView.findViewById(R.id.y_year);
         yearTextView.setText(yearsArrayList.get(position));
 
-        TextView numItemsTextView = (TextView) rowView.findViewById(R.id.y_num_items);
-        numItemsTextView.setText(yearsArrayList.size()+"");
 
         return rowView;
     }
+
+
 }

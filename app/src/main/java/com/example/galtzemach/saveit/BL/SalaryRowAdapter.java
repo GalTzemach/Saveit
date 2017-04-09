@@ -1,8 +1,9 @@
 package com.example.galtzemach.saveit.BL;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,13 +13,15 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class SalaryAdapter extends ArrayAdapter {
-    private final Activity context;
+public class SalaryRowAdapter extends ArrayAdapter<String> {
+
+    private final Context context;
     private final ArrayList<String> salariesArrayList;
 
 
-    public SalaryAdapter(Activity context, ArrayList<String> salariesArrayList) {
-        super(context, R.layout.salalry_row, salariesArrayList);
+    public SalaryRowAdapter(Context context, ArrayList<String> salariesArrayList) {
+        super(context, R.layout.year_row, salariesArrayList);
+
         this.context = context;
         this.salariesArrayList = salariesArrayList;
     }
@@ -26,7 +29,9 @@ public class SalaryAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View rowView = context.getLayoutInflater().inflate(R.layout.salalry_row, null, true);
+
+
+        View rowView=  LayoutInflater.from(this.context).inflate(R.layout.salalry_row, null, true);
 
         TextView yearTextView = (TextView) rowView.findViewById(R.id.s_row_month);
         yearTextView.setText(salariesArrayList.get(position));///get month
