@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener {
-
+    //
     private final String TAG = this.getClass().toString();
 
     // create FireBase auth feature
