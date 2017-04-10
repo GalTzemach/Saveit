@@ -13,13 +13,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class SalaryRowAdapter extends ArrayAdapter<String> {
+public class SalaryRowAdapter extends ArrayAdapter<Salary> {
 
     private final Context context;
-    private final ArrayList<String> salariesArrayList;
+    private final ArrayList<Salary> salariesArrayList;
 
 
-    public SalaryRowAdapter(Context context, ArrayList<String> salariesArrayList) {
+    public SalaryRowAdapter(Context context, ArrayList<Salary> salariesArrayList) {
         super(context, R.layout.year_row, salariesArrayList);
 
         this.context = context;
@@ -34,14 +34,18 @@ public class SalaryRowAdapter extends ArrayAdapter<String> {
         View rowView=  LayoutInflater.from(this.context).inflate(R.layout.salalry_row, null, true);
 
         TextView yearTextView = (TextView) rowView.findViewById(R.id.s_row_month);
-        yearTextView.setText(salariesArrayList.get(position));///get month
+        yearTextView.setText("Month: " + salariesArrayList.get(position).getMonth());
 
         TextView grossNetTextView = (TextView) rowView.findViewById(R.id.s_row_gross_net);
-        grossNetTextView.setText(salariesArrayList.get(position));///get gross&net
+        grossNetTextView.setText(salariesArrayList.get(position).getGrossRevenue() + "  |  " +salariesArrayList.get(position).getNetRevenue());
 
         TextView notesTextView = (TextView) rowView.findViewById(R.id.s_row_notes);
-        notesTextView.setText(salariesArrayList.get(position));///get notes
+        notesTextView.setText(salariesArrayList.get(position).getNotes());
 
         return rowView;
+    }
+
+    public ArrayList<Salary> getSalariesArrayList() {
+        return salariesArrayList;
     }
 }

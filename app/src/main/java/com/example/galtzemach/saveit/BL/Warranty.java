@@ -68,6 +68,10 @@ public class Warranty {
         return cost;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setCost(float cost) {
         this.cost = cost;
     }

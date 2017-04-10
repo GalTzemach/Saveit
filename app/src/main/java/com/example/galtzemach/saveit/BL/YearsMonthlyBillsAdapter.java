@@ -12,13 +12,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class YearsSalaryAdapter extends ArrayAdapter<String> {
+public class YearsMonthlyBillsAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final ArrayList<String> yearsArrayList;
 
 
-    public YearsSalaryAdapter(Activity context, ArrayList<String> yearArrayList) {
+    public YearsMonthlyBillsAdapter(Activity context, ArrayList<String> yearArrayList) {
         super(context, R.layout.year_row, yearArrayList);
         this.context = context;
         this.yearsArrayList = yearArrayList;

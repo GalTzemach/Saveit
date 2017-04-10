@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
 import java.util.Calendar;
@@ -261,6 +262,7 @@ public class AddWarrantyFragment extends Fragment {
             }
         }
         Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, null, notes);
+        MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, null);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

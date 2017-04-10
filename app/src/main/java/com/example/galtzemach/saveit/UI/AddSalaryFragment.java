@@ -24,6 +24,7 @@ import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.DB.DataBase;
+import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -235,6 +236,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     private void createSalaryObject() {
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
         Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
+        MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, null);
     }
 
     private boolean checkAllFields() {
@@ -393,27 +395,20 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     @Override
     public void onAddSalaryComplete() {
 
-        mProgressDialog.dismiss();
-        Toast.makeText(getContext(), "Photo upload finished", Toast.LENGTH_LONG).show();
-
     }
 
     @Override
     public void onEmployersListReady(ArrayList<String> employersList) {
 
-        Toast.makeText(getContext(), "salary fragment: " + employersList.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onYearsListReady_Salary(ArrayList<Integer> yearsList) {
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
 
-        Toast.makeText(getContext(), "salary fragment: " + yearsList.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onSalaryListReady(ArrayList<Salary> salaryList) {
-
-        Toast.makeText(getContext(), "salary fragment: " + salaryList.toString(), Toast.LENGTH_LONG).show();
 
     }
 
@@ -423,7 +418,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onYearsListReady_Warranty(ArrayList<Integer> yearsList) {
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
 
     }
 
@@ -443,7 +438,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onYearsListReady_MonthlyBills(ArrayList<Integer> yearsList) {
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
 
     }
 
@@ -451,6 +446,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
 
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

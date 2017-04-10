@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.galtzemach.saveit.BL.MonthlyBills;
+import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
 import java.util.Calendar;
@@ -176,6 +177,7 @@ public class AddMonthlyBillsFragment extends Fragment {
     private void createMonthlyBillsObject() {
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
         MonthlyBills newMonthlyBills = new MonthlyBills(category, year, month, sum, null, notes);
+        MainActivity.dataBase.createNewMonthlyBills(MainActivity.user_id, newMonthlyBills, null);
     }
 
     private boolean checkAllFields() {

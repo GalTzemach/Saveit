@@ -17,15 +17,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.MonthlyBillsRowAdapter;
 import com.example.galtzemach.saveit.BL.PhotosAdapter;
+import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.SalaryRowAdapter;
+import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.BL.WarrantyRowAdapter;
+import com.example.galtzemach.saveit.BL.YearsMonthlyBillsAdapter;
 import com.example.galtzemach.saveit.BL.YearsSalaryAdapter;
 import com.example.galtzemach.saveit.BL.YearsWarrantyAdapter;
+import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment;
 import com.example.galtzemach.saveit.UI.AddSalaryFragment;
 import com.example.galtzemach.saveit.UI.AddWarrantyFragment;
+import com.example.galtzemach.saveit.UI.DataReadyListener;
 import com.example.galtzemach.saveit.UI.YearArrAdapter;
 import com.example.galtzemach.saveit.UI.YearArrayListAdapter;
 import com.example.galtzemach.saveit.UI.dummy.DummyContent;
@@ -39,8 +45,8 @@ import java.util.ArrayList;
 
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
-public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener {
-    //
+public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
+
     private final String TAG = this.getClass().toString();
 
     // create FireBase auth feature
@@ -50,6 +56,74 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     // create FireBaseDatabase feature + specific userRef
     private FirebaseDatabase mDataBase;
     private DatabaseReference mUserRef;
+
+
+    public static DataBase dataBase;
+
+    private ArrayList<Salary> salaryArrayList;
+    private ArrayList<Warranty> warrantyArrayList;
+    private ArrayList<MonthlyBills> monthlyBillsArrayList;
+    private ArrayList<String> yearsMonthlyBillsList;
+    private ArrayList<String> yearsMonthlyBillsArraylist;
+
+    @Override
+    public void onAddSalaryComplete() {
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
+
+        openSalaryList(yearsList);
+
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+        openSalaryMonthList(salaryList);
+    }
+
+    @Override
+    public void onAddWarrantyComplete() {
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+        openWarrantyList(yearsList);
+    }
+
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+        openWarrantyNameList(warrantyList);
+    }
+
+    @Override
+    public void onAddMonthlyBillsComplete() {
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> categoryList) {
+        openMonthlyBillsCategoryList(categoryList);
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+        openMonthlyBillsYearList(yearsList);
+    }
+
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+        openMonthlyBillsMonthList(monthlyBillsList);
+    }
 
     private enum Category {salary, warranty, monthlyBills};
     private Category currentCategory;
@@ -70,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private String[] yearArr;
     private String[] emptyArr = new String[0];
 
-    private String user_id;
+    public static String user_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +153,15 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-
         mDataBase = FirebaseDatabase.getInstance();
+
+        // create instance of data base class and register as listener
+        dataBase = new DataBase();
+        dataBase.registerListener(this);
+
+        ///
+        user_id = mAuth.getCurrentUser().getUid();
+
 
         // check if user sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -102,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                 }
             }
         };
+
         fillArrays();
 
         listView = (ListView) findViewById(R.id.main_list_view);
@@ -124,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     case salary:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
-                            openSalaryList();
+                            dataBase.getYearsPerUser_salary(user_id);
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -136,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     case warranty:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
-                            openWarrantyList();
+                            dataBase.getYearsPerUser_Warranty(user_id);
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -148,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     case monthlyBills:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
-                            openMonthlyBillsList();
+                            dataBase.getCategoryPerUser(user_id);
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -169,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh)
                             openAddSalaryFragment();
                         else
-                            openSalaryList();
+                            dataBase.getYearsPerUser_salary(user_id);
                         return true;
 
 
@@ -179,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh)
                             openAddWarrantyFragment();
                         else
-                            openWarrantyList();
+                            dataBase.getYearsPerUser_Warranty(user_id);
                         return true;
 
 
@@ -189,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh)
                             openAddMonthlyBillsFragment();
                         else
-                            openMonthlyBillsList();
+                            dataBase.getCategoryPerUser(user_id);
                         return true;
                 }
                 return false;
@@ -197,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
-        openSalaryList();
+        dataBase.getYearsPerUser_salary(user_id);
     }
 
     @Override
@@ -241,41 +324,52 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), addMonthlyBillsFragment).commit();
     }
 
-    private void openSalaryList() {
+    private void openSalaryList(final ArrayList<String> yearsSalaryArrayList) {
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearsSalaryAdapter yearAdapter = new YearsSalaryAdapter(this, yearArrayList);
+        YearsSalaryAdapter yearAdapter = new YearsSalaryAdapter(this, yearsSalaryArrayList);
         listView.setAdapter(yearAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                SalaryRowAdapter salaryRowAdapter = new SalaryRowAdapter(getApplicationContext(), yearArrayList);///
-                listView.setAdapter(salaryRowAdapter);
+                dataBase.getSalaryPerUserAndYear(user_id, Integer.parseInt(yearsSalaryArrayList.get(position)));
+
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        nestedScrollView.removeAllViews();
-                        View salaryView = getLayoutInflater().inflate(R.layout.salary, nestedScrollView, true);///
-
-                        TextView employerTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
-//                        employerTextView.setText();
-
-                        TextView mYDateTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
-//                        mYDateTextView.setText();
-
-                        TextView grossNetTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
-//                        grossNetTextView.setText();
-
-                        TextView notesTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
-//                        notesTextView.setText();
-
-                        ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
-                        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-                        photoSalaryListView.setAdapter(photosAdapter);
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        openSalaryItem(position);
                     }
                 });
             }
         });
+    }
+
+    private void openSalaryItem(int position) {
+        nestedScrollView.removeAllViews();
+        View salaryView = getLayoutInflater().inflate(R.layout.salary, nestedScrollView, true);
+
+        TextView employerTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
+                        employerTextView.setText(salaryArrayList.get(position).getEmployer());
+
+        TextView mYDateTextView = (TextView) salaryView.findViewById(R.id.salary_m_y);
+                        mYDateTextView.setText(salaryArrayList.get(position).getMonth() + "/" + salaryArrayList.get(position).getYear());
+
+        TextView grossNetTextView = (TextView) salaryView.findViewById(R.id.salary_gross_net);
+                        grossNetTextView.setText(salaryArrayList.get(position).getGrossRevenue() + "  |  " + salaryArrayList.get(position).getNetRevenue());
+
+        TextView notesTextView = (TextView) salaryView.findViewById(R.id.salary_notes);
+                        notesTextView.setText(salaryArrayList.get(position).getNotes());
+
+        ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
+        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+        photoSalaryListView.setAdapter(photosAdapter);
+    }
+
+    private void openSalaryMonthList(ArrayList<Salary> salaryList) {
+        salaryArrayList = salaryList;
+        SalaryRowAdapter salaryRowAdapter = new SalaryRowAdapter(getApplicationContext(), salaryList);
+        listView.setAdapter(salaryRowAdapter);
     }
 
     private void openEmloyersList() {
@@ -287,43 +381,21 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
 
-    private void openWarrantyList() {
+    private void openWarrantyList(final ArrayList<String> yearsList) {
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearsWarrantyAdapter yearsWarrantyAdapter = new YearsWarrantyAdapter(this, yearArrayList);
+        YearsWarrantyAdapter yearsWarrantyAdapter = new YearsWarrantyAdapter(this, yearsList);
         listView.setAdapter(yearsWarrantyAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                WarrantyRowAdapter warrantyRowAdapter = new WarrantyRowAdapter(getApplicationContext(), yearArrayList);
-                listView.setAdapter(warrantyRowAdapter);
+                dataBase.getWarrantyPerUserAndTYear(user_id, Integer.parseInt(yearsList.get(position)));
+
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        nestedScrollView.removeAllViews();
-                        View warrantyView = getLayoutInflater().inflate(R.layout.warranty, nestedScrollView, true);///
-
-                        TextView nameTextView = (TextView) warrantyView.findViewById(R.id.warranty_name);
-//                        nameTextView.setText();
-
-                        TextView periodInMonthsTextView = (TextView) warrantyView.findViewById(R.id.warranty_in_months);
-//                        periodInMonthsTextView.setText();
-
-                        TextView purchaseDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_purchas_date);
-//                        purchaseDateTextView.setText();
-
-                        TextView expireDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_exp_date);
-//                        expireDateTextView.setText();
-
-                        TextView costTextView = (TextView) warrantyView.findViewById(R.id.warranty_cost);
-//                        costTextView.setText();
-
-                        TextView notesTextView = (TextView) warrantyView.findViewById(R.id.warranty_notes);
-//                        notesTextView.setText();
-
-                        ListView photoWarrantyListView = (ListView) warrantyView.findViewById(R.id.warranty_photos_list_view);
-                        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-                        photoWarrantyListView.setAdapter(photosAdapter);
+                        openWarrantyItem(warrantyArrayList, position);
                     }
                 });
 
@@ -331,44 +403,103 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
     }
 
-    private void openMonthlyBillsList() {
+    private void openWarrantyItem(ArrayList<Warranty> warrantyArrayList, int position) {
+        nestedScrollView.removeAllViews();
+        View warrantyView = getLayoutInflater().inflate(R.layout.warranty, nestedScrollView, true);///
+
+        TextView nameTextView = (TextView) warrantyView.findViewById(R.id.warranty_name);
+                        nameTextView.setText(warrantyArrayList.get(position).getName().toString());
+
+        TextView periodInMonthsTextView = (TextView) warrantyView.findViewById(R.id.warranty_in_months);
+                        periodInMonthsTextView.setText("Period in months: " + warrantyArrayList.get(position).getPeriodInMonths());
+
+        TextView purchaseDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_purchas_date);
+                        purchaseDateTextView.setText(warrantyArrayList.get(position).getPurchaseDate().getYear() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getMonth() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getDay() + "  | ");
+
+        TextView expireDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_exp_date);
+                        expireDateTextView.setText(warrantyArrayList.get(position).getExpiryDate().getYear() +"/"+ warrantyArrayList.get(position).getExpiryDate().getMonth() +"/"+ warrantyArrayList.get(position).getExpiryDate().getDay());
+
+        TextView costTextView = (TextView) warrantyView.findViewById(R.id.warranty_cost);
+                        costTextView.setText("Cost: " + warrantyArrayList.get(position).getCost());
+
+        TextView notesTextView = (TextView) warrantyView.findViewById(R.id.warranty_notes);
+                        notesTextView.setText(warrantyArrayList.get(position).getNotes());
+
+        ListView photoWarrantyListView = (ListView) warrantyView.findViewById(R.id.warranty_photos_list_view);
+        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+        photoWarrantyListView.setAdapter(photosAdapter);
+    }
+
+    private void openWarrantyNameList(ArrayList<Warranty> warrantyList) {
+        warrantyArrayList = warrantyList;
+        WarrantyRowAdapter warrantyRowAdapter = new WarrantyRowAdapter(getApplicationContext(), warrantyList);
+        listView.setAdapter(warrantyRowAdapter);
+    }
+
+    private void openMonthlyBillsCategoryList(final ArrayList<String> categoryList) {
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearArrayListAdapter yearArrayListAdapter = new YearArrayListAdapter(this, yearArrayList);
+        YearArrayListAdapter yearArrayListAdapter = new YearArrayListAdapter(this, categoryList);
         listView.setAdapter(yearArrayListAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                MonthlyBillsRowAdapter monthlyBillsRowAdapter = new MonthlyBillsRowAdapter(getApplicationContext(), yearArrayList);
-                listView.setAdapter(monthlyBillsRowAdapter);
+                dataBase.getYearslistPerUserAndCategory(user_id, categoryList.get(position));
+
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        nestedScrollView.removeAllViews();
-                        View monthlyBillsView = getLayoutInflater().inflate(R.layout.monthly_bills, nestedScrollView, true);///
+                    public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+                        dataBase.getMonthlyBillsListPerUserAndYear(user_id, Integer.parseInt(yearsMonthlyBillsArraylist.get(position)), categoryList.get(position));
 
-                        TextView categoryTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_category);
-//                        categoryTextView.setText();
-
-                        TextView dateTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_month_year);
-//                        dateTextView.setText();
-
-                        TextView sumTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_sum);
-//                        sumTextView.setText();
-
-
-                        TextView notesTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_notes);
-//                        notesTextView.setText();
-
-                        ListView photoMonthlyBillsListView = (ListView) monthlyBillsView.findViewById(R.id.monthly_bills_photos_list_view);
-                        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-                        photoMonthlyBillsListView.setAdapter(photosAdapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                openMonthlyBillsItem(position);
+                            }
+                        });
                     }
                 });
-
             }
         });
     }
+
+    private void openMonthlyBillsMonthList(ArrayList<MonthlyBills> monthlyBillsList) {
+        this.monthlyBillsArrayList = monthlyBillsList;
+        MonthlyBillsRowAdapter monthlyBillsRowAdapter = new MonthlyBillsRowAdapter(this, monthlyBillsList);
+        listView.setAdapter(monthlyBillsRowAdapter);
+    }
+
+    private void openMonthlyBillsYearList(ArrayList<String> yearsList) {
+        this.yearsMonthlyBillsArraylist = yearsList;
+        YearsMonthlyBillsAdapter monthlyBillsRowAdapter = new YearsMonthlyBillsAdapter(this, yearsList);
+        listView.setAdapter(monthlyBillsRowAdapter);
+    }
+
+
+    private void openMonthlyBillsItem(int position) {
+        nestedScrollView.removeAllViews();
+        View monthlyBillsView = getLayoutInflater().inflate(R.layout.monthly_bills, nestedScrollView, true);///
+
+        TextView categoryTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_category);
+                        categoryTextView.setText(monthlyBillsArrayList.get(position).getCategory());
+
+        TextView dateTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_month_year);
+                        dateTextView.setText(monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
+
+        TextView sumTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_sum);
+                        sumTextView.setText(monthlyBillsArrayList.get(position).getSum()+"");
+
+
+        TextView notesTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_notes);
+                        notesTextView.setText(monthlyBillsArrayList.get(position).getNotes());
+
+        ListView photoMonthlyBillsListView = (ListView) monthlyBillsView.findViewById(R.id.monthly_bills_photos_list_view);
+        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+        photoMonthlyBillsListView.setAdapter(photosAdapter);
+    }
+
+
 
     private void fillArrays() {
         yearArrayList = new ArrayList<>();

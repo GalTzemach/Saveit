@@ -16,20 +16,21 @@ public interface DataReadyListener {
     void onAddSalaryComplete();
 
     void onEmployersListReady(ArrayList<String> employersList);
-    void onYearsListReady_Salary(ArrayList<Integer> yearsList);
+    void onYearsListReady_Salary(ArrayList<String> yearsList);
     void onSalaryListReady(ArrayList<Salary> salaryList);
+
 
     // Warranty
     void onAddWarrantyComplete();
 
-    void onYearsListReady_Warranty(ArrayList<Integer> yearsList);
+    void onYearsListReady_Warranty(ArrayList<String> yearsList);
     void onWarrantyListReady(ArrayList<Warranty> warrantyList);
 
     // MonthlyBills
     void onAddMonthlyBillsComplete();
 
     void onCategoryListReady(ArrayList<String> CategoryList);
-    void onYearsListReady_MonthlyBills(ArrayList<Integer> yearsList);
+    void onYearsListReady_MonthlyBills(ArrayList<String> yearsList);
     void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList);
 
 }

@@ -41,7 +41,7 @@ public class DataBase{
 
     // list for results
     private ArrayList<String> employersList;
-    private ArrayList<Integer> yearsList;
+    private ArrayList<String> yearsList;
     private ArrayList<Salary> salaryList;
     private ArrayList<Warranty> warrantyList;
     private ArrayList<String> categoryList;
@@ -84,39 +84,56 @@ public class DataBase{
 
         final ArrayList<String> downloadArr = new ArrayList<>();
 
-        //upload photo to storage
-        for (int i = 0; i < uploadUriArr.size(); i++) {
+        if (uploadUriArr != null) {
+            //upload photo to storage
+            for (int i = 0; i < uploadUriArr.size() || i < 1; i++) {
 
-            final int finalI = i;
+                final int finalI = i;
 
-            StorageReference filePath = mStorageRef.child("Photos").child(uploadUriArr.get(i).getLastPathSegment());
+                StorageReference filePath = mStorageRef.child("Photos").child(uploadUriArr.get(i).getLastPathSegment());
 
-            filePath.putFile(uploadUriArr.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                filePath.putFile(uploadUriArr.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-                    String tempUri = taskSnapshot.getDownloadUrl().toString();
-                    downloadArr.add(tempUri);
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    // complete upload photo
-                    if (finalI == uploadUriArr.size() - 1) {
+                        String tempUri = taskSnapshot.getDownloadUrl().toString();
+                        downloadArr.add(tempUri);
 
-                        salary.setDownloadUriArr(downloadArr);
+                        // complete upload photo
+                        if (finalI == uploadUriArr.size() - 1) {
 
-                        // save the new salary on data base
-                        newItemRef.setValue(salary);
+                            salary.setDownloadUriArr(downloadArr);
 
-                        // notify that complete
-                        for (DataReadyListener dataReadyListener : listeners) {
+                            // save the new salary on data base
+                            newItemRef.setValue(salary);
 
-                            dataReadyListener.onAddSalaryComplete();
+                            // notify that complete
+                            for (DataReadyListener dataReadyListener : listeners) {
+
+                                dataReadyListener.onAddSalaryComplete();
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
-    }
+        else if (uploadUriArr == null) {
 
+            salary.setDownloadUriArr(null);
+
+            // save the new salary on data base
+            newItemRef.setValue(salary);
+
+            // notify that complete
+            for (DataReadyListener dataReadyListener : listeners) {
+
+                dataReadyListener.onAddSalaryComplete();
+            }
+
+        }
+
+    }
 
     public void createNewWarranty(String user_id, final Warranty warranty, final ArrayList<Uri> uploadUriArr) {
 
@@ -124,6 +141,8 @@ public class DataBase{
         newItemRef = mUserRef.child("Warranty").push();
 
         final ArrayList<String> downloadArr = new ArrayList<>();
+
+        if (uploadUriArr != null) {
 
         //upload photo to storage
         for (int i = 0; i < uploadUriArr.size(); i++) {
@@ -156,6 +175,19 @@ public class DataBase{
                 }
             });
         }
+        } else if (uploadUriArr == null) {
+
+            warranty.setDownloadUriArr(null);
+
+            // save the new warranty on data base
+            newItemRef.setValue(warranty);
+
+            // notify that complete
+            for (DataReadyListener dataReadyListener : listeners) {
+
+                dataReadyListener.onAddWarrantyComplete();
+            }
+        }
     }
 
     public void createNewMonthlyBills(String user_id, final MonthlyBills monthlyBills, final ArrayList<Uri> uploadUriArr) {
@@ -165,39 +197,56 @@ public class DataBase{
 
         final ArrayList<String> downloadArr = new ArrayList<>();
 
-        //upload photo to storage
-        for (int i = 0; i < uploadUriArr.size(); i++) {
+        if (uploadUriArr != null) {
 
-            final int finalI = i;
+            //upload photo to storage
+            for (int i = 0; i < uploadUriArr.size(); i++) {
 
-            StorageReference filePath = mStorageRef.child("Photos").child(uploadUriArr.get(i).getLastPathSegment());
+                final int finalI = i;
 
-            filePath.putFile(uploadUriArr.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                StorageReference filePath = mStorageRef.child("Photos").child(uploadUriArr.get(i).getLastPathSegment());
 
-                    String tempUri = taskSnapshot.getDownloadUrl().toString();
-                    downloadArr.add(tempUri);
+                filePath.putFile(uploadUriArr.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    if (finalI == uploadUriArr.size() - 1) {
+                        String tempUri = taskSnapshot.getDownloadUrl().toString();
+                        downloadArr.add(tempUri);
 
-                        monthlyBills.setDownloadUriArr(downloadArr);
+                        if (finalI == uploadUriArr.size() - 1) {
 
-                        // save the new salary on data base
-                        newItemRef.setValue(monthlyBills);
+                            monthlyBills.setDownloadUriArr(downloadArr);
 
-                        // notify that complete
-                        for (DataReadyListener dataReadyListener : listeners) {
+                            // save the new salary on data base
+                            newItemRef.setValue(monthlyBills);
 
-                            dataReadyListener.onAddMonthlyBillsComplete();
+                            // notify that complete
+                            for (DataReadyListener dataReadyListener : listeners) {
+
+                                dataReadyListener.onAddMonthlyBillsComplete();
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+        }  else if (uploadUriArr == null) {
+
+        monthlyBills.setDownloadUriArr(null);
+
+        // save the new monthlyBills on data base
+        newItemRef.setValue(monthlyBills);
+
+        // notify that complete
+        for (DataReadyListener dataReadyListener : listeners) {
+
+            dataReadyListener.onAddMonthlyBillsComplete();
         }
+    }
     }
 
     public void getEmployersPerUser(String user_id) {
+
+        employersList.clear();
 
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -221,7 +270,43 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onEmployersListReady(employersList);
-                        employersList.clear();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+                Log.e(TAG, "The query failed!");
+            }
+        });
+    }
+
+    public void getYearsPerUser_salary(String user_id) {
+
+        yearsList.clear();
+
+        mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
+        mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Iterable<DataSnapshot> salaryItems = dataSnapshot.child("Salary").getChildren();
+
+                for (DataSnapshot salary : salaryItems) {
+
+                    String tempYear = String.valueOf(salary.getValue(Salary.class).getYear());
+
+                    if (! yearsList.contains(tempYear) ) {
+
+                        yearsList.add(String.valueOf(tempYear));
+                    }
+                }
+
+                // notify that complete
+                for (DataReadyListener dataReadyListener : listeners) {
+
+                    dataReadyListener.onYearsListReady_Salary(yearsList);
                 }
             }
 
@@ -245,7 +330,7 @@ public class DataBase{
 
                 for (DataSnapshot salary : salaryItems) {
 
-                    int tempYear = salary.getValue(Salary.class).getYear();
+                    String tempYear = String.valueOf(salary.getValue(Salary.class).getYear());
                     String tempEmployer = salary.getValue(Salary.class).getEmployer();
 
                     if (! yearsList.contains(tempYear) && tempEmployer.equals(employer)) {
@@ -270,6 +355,8 @@ public class DataBase{
 
     public void getSalaryPerUserAndYear(String user_id, final int year) {
 
+        salaryList.clear();
+
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -291,7 +378,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onSalaryListReady(salaryList);
-                        salaryList.clear();
                 }
             }
 
@@ -304,6 +390,8 @@ public class DataBase{
 
     public void getYearsPerUser_Warranty(String user_id) {
 
+        yearsList.clear();
+
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -314,7 +402,7 @@ public class DataBase{
 
                 for (DataSnapshot warranty : warrantyItems) {
 
-                    int tempYear = warranty.getValue(Warranty.class).getPurchaseDate().getYear();
+                    String tempYear = String.valueOf(warranty.getValue(Warranty.class).getPurchaseDate().getYear());
 
                     if (! yearsList.contains(tempYear) ) {
 
@@ -326,7 +414,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onYearsListReady_Warranty(yearsList);
-                        yearsList.clear();
                 }
             }
 
@@ -338,6 +425,7 @@ public class DataBase{
     }
 
     public void getWarrantyPerUserAndTYear(String user_id, final int year) {
+        warrantyList.clear();
 
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -361,7 +449,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onWarrantyListReady(warrantyList);
-                        warrantyList.clear();
                 }
             }
 
@@ -373,6 +460,8 @@ public class DataBase{
     }
 
     public void getCategoryPerUser(String user_id) {
+
+        categoryList.clear();
 
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -396,7 +485,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onCategoryListReady(categoryList);
-                        categoryList.clear();
                 }
             }
 
@@ -408,6 +496,8 @@ public class DataBase{
     }
 
     public void getYearslistPerUserAndCategory(String user_id, final String category) {
+
+        yearsList.clear();
 
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -423,7 +513,7 @@ public class DataBase{
 
                     if ( ! yearsList.contains(tempMonthlyBills.getYear()) && tempMonthlyBills.getCategory().equals(category) ) {
 
-                        yearsList.add(tempMonthlyBills.getYear());
+                        yearsList.add(String.valueOf(tempMonthlyBills.getYear()));
                     }
                 }
 
@@ -431,7 +521,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onYearsListReady_MonthlyBills(yearsList);
-                        yearsList.clear();
                 }
             }
 
@@ -443,6 +532,8 @@ public class DataBase{
     }
 
     public void getMonthlyBillsListPerUserAndYear(String user_id, final int year, final String category) {
+
+        monthlyBillsList.clear();
 
         mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -466,7 +557,6 @@ public class DataBase{
                 for (DataReadyListener dataReadyListener : listeners) {
 
                         dataReadyListener.onMonthlyBillsListReady(monthlyBillsList);
-                        monthlyBillsList.clear();
                 }
             }
 

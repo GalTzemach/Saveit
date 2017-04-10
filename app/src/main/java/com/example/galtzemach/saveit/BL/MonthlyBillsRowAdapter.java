@@ -13,13 +13,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class MonthlyBillsRowAdapter extends ArrayAdapter {
+public class MonthlyBillsRowAdapter extends ArrayAdapter<MonthlyBills> {
 
     private final Context context;
-    private final ArrayList<String> monthlyBillsArrayList;
+    private final ArrayList<MonthlyBills> monthlyBillsArrayList;
 
 
-    public MonthlyBillsRowAdapter(Context context, ArrayList<String> monthlyBillsArrayList) {
+    public MonthlyBillsRowAdapter(Context context, ArrayList<MonthlyBills> monthlyBillsArrayList) {
         super(context, R.layout.monthly_bills_row, monthlyBillsArrayList);
         this.context = context;
         this.monthlyBillsArrayList = monthlyBillsArrayList;
@@ -31,13 +31,13 @@ public class MonthlyBillsRowAdapter extends ArrayAdapter {
         View rowView = LayoutInflater.from(context).inflate(R.layout.monthly_bills_row, null, true);
 
         TextView categoryMYTextView = (TextView) rowView.findViewById(R.id.m_row_category_m_y);
-        categoryMYTextView.setText(monthlyBillsArrayList.get(position));///get cat & m/y
+        categoryMYTextView.setText(monthlyBillsArrayList.get(position).getCategory() +" "+ monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
 
         TextView sumTextView = (TextView) rowView.findViewById(R.id.m_row_sum);
-        sumTextView.setText(monthlyBillsArrayList.get(position));///get sum
+        sumTextView.setText(monthlyBillsArrayList.get(position).getSum()+"");///get sum
 
         TextView notesTextView = (TextView) rowView.findViewById(R.id.m_row_notes);
-        notesTextView.setText(monthlyBillsArrayList.get(position));///get notes
+        notesTextView.setText(monthlyBillsArrayList.get(position).getNotes());///get notes
 
         return rowView;
     }

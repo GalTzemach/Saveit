@@ -13,13 +13,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class WarrantyRowAdapter extends ArrayAdapter {
+public class WarrantyRowAdapter extends ArrayAdapter<Warranty> {
 
     private final Context context;
-    private final ArrayList<String> warrantiesArrayList;
+    private final ArrayList<Warranty> warrantiesArrayList;
 
 
-    public WarrantyRowAdapter(Context context, ArrayList<String> warrantiesArrayList) {
+    public WarrantyRowAdapter(Context context, ArrayList<Warranty> warrantiesArrayList) {
         super(context, R.layout.warranty_row, warrantiesArrayList);
         this.context = context;
         this.warrantiesArrayList = warrantiesArrayList;
@@ -31,13 +31,13 @@ public class WarrantyRowAdapter extends ArrayAdapter {
         View rowView = LayoutInflater.from(context).inflate(R.layout.warranty_row, null, true);
 
         TextView nameTextView = (TextView) rowView.findViewById(R.id.w__row_name);
-        nameTextView.setText(warrantiesArrayList.get(position));///get name
+        nameTextView.setText(warrantiesArrayList.get(position).getName());
 
         TextView expDateTextView = (TextView) rowView.findViewById(R.id.w__row_exp_date);
-        expDateTextView.setText(warrantiesArrayList.get(position));///get exp
+        expDateTextView.setText("EXP:" + warrantiesArrayList.get(position).getExpiryDate().getDate());
 
         TextView notesTextView = (TextView) rowView.findViewById(R.id.w_row_notes);
-        notesTextView.setText(warrantiesArrayList.get(position));///get notes
+        notesTextView.setText(warrantiesArrayList.get(position).getNotes());
 
         return rowView;
     }
