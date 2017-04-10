@@ -16,7 +16,7 @@ public class MonthlyBills {
 
     private ArrayList<String> downloadUriArr;
 
-    public MonthlyBills() {
+    public MonthlyBills(Category category, int year, int month, float sum, String notes) {
     }
 
     public MonthlyBills(Category category, int year, int month, float sum, String[] refPhotoArr, String notes) {

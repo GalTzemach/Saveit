@@ -1,10 +1,13 @@
 package com.example.galtzemach.saveit.UI;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,12 +22,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.galtzemach.saveit.BL.MonthlyBills;
+import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +48,7 @@ import java.util.Date;
  * Use the {@link AddWarrantyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddWarrantyFragment extends Fragment {
+public class AddWarrantyFragment extends Fragment implements DataReadyListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,6 +57,21 @@ public class AddWarrantyFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    // create progress dialog
+    private ProgressDialog mProgressDialog;
+
+    // create FireBaseDatabase feature + specific userRef
+    private FirebaseDatabase mDataBase;
+    private DatabaseReference mUserRef;
+
+    private DatabaseReference newSalaryRef;
+
+    // create StorageReference
+    private StorageReference mStorageRef;
+
+    // create FireBase auth feature
+    private FirebaseAuth mAuth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,14 +86,25 @@ public class AddWarrantyFragment extends Fragment {
     private String notes;
     private EditText nameEditText;
     private EditText purchaseDateEditText;
-    private Button addButton;
-    private Button removeButton;
-    private TextView numAddedTextView;
     private Button okButton;
     private Spinner categorySpinner;
     private EditText monthsEditText;
     private EditText costEditText;
     private EditText notesEditText;
+
+    private TextView numAddedTextView;
+    private Button removeAllPhotosButton;
+    private Button addPhotoButton;
+
+
+    private Salary tempSalary;
+
+    private ArrayList<Uri> uploadUriArr;
+
+    private static final int CAMERA_INTENT = 1;
+    private static final int GALLERY_INTENT = 2;
+
+    private DataBase db;
 
 
     public AddWarrantyFragment() {
@@ -96,6 +136,19 @@ public class AddWarrantyFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // initialize fire base features
+        mAuth = FirebaseAuth.getInstance();
+        mDataBase = FirebaseDatabase.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        uploadUriArr = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext());
+
+        //
+        db = new DataBase();
+        db.registerListener(this);
     }
 
     @Override
@@ -107,8 +160,8 @@ public class AddWarrantyFragment extends Fragment {
         //get fields
         nameEditText = (EditText) view.findViewById(R.id.w__row_name);
         purchaseDateEditText = (EditText) view.findViewById(R.id.w_purchase_date);
-        addButton = (Button) view.findViewById(R.id.w_add_photos);
-        removeButton = (Button) view.findViewById(R.id.w_remove_photos);
+        addPhotoButton = (Button) view.findViewById(R.id.w_add_photos);
+        removeAllPhotosButton = (Button) view.findViewById(R.id.w_remove_photos);
         numAddedTextView = (TextView) view.findViewById(R.id.w_num_added_photos);
         okButton = (Button) view.findViewById(R.id.w_ok);
         categorySpinner = (Spinner) view.findViewById(R.id.w_category);
@@ -143,7 +196,7 @@ public class AddWarrantyFragment extends Fragment {
             }
         });
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+        addPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
@@ -156,21 +209,10 @@ public class AddWarrantyFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         if (menuItem.getItemId() == R.id.from_camera) {//from camera
-//                            photoFromCamera();
-                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(0).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                            photoFromCamera();
                         } else { //from gallery
-//                            photoFromGallery();
-                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(1).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                            photoFromGallery();
                         }
-
-                        ///if size of arr photos >= 1
-                        numAddedTextView.setVisibility(View.VISIBLE);
-                        numAddedTextView.setText("X Photo added");
-                        removeButton.setVisibility(View.VISIBLE);
-
-
-                        ///just if some photo added
-                        addButton.setText("Add more photos");
 
                         return true;
                     }
@@ -178,13 +220,13 @@ public class AddWarrantyFragment extends Fragment {
             }
         });
 
-        removeButton.setOnClickListener(new View.OnClickListener() {
+        removeAllPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addButton.setText("Add photo");
+                uploadUriArr.clear();
+                addPhotoButton.setText("Add photo");
                 numAddedTextView.setVisibility(View.INVISIBLE);
                 view.setVisibility(View.INVISIBLE);
-                ///remove photos
             }
         });
 
@@ -193,7 +235,6 @@ public class AddWarrantyFragment extends Fragment {
             public void onClick(View view) {
                 if (checkAllFields() ){
                     createWarrantyObject();
-//                    send new salary to db ///
                 }
             }
         });
@@ -247,6 +288,17 @@ public class AddWarrantyFragment extends Fragment {
         return resBool;
     }
 
+    private void photoFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, GALLERY_INTENT);
+    }
+
+    private void photoFromCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INTENT);
+    }
+
     private void createWarrantyObject() {
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
         expireDate = purchaseDate;
@@ -261,8 +313,30 @@ public class AddWarrantyFragment extends Fragment {
                 expireDate.setMonth((expireDate.getMonth() + (months % 12)) % 11);
             }
         }
-        Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, null, notes);
-        MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, null);
+        Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, notes);
+        MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, uploadUriArr);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
+            Uri uri = data.getData();
+            uploadUriArr.add(uri);
+
+        } else if (requestCode == CAMERA_INTENT && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            uploadUriArr.add(uri);
+        }
+
+        if(uploadUriArr.size() >= 1) {
+            numAddedTextView.setVisibility(View.VISIBLE);
+            numAddedTextView.setText((uploadUriArr.size() + " Photo added"));
+            removeAllPhotosButton.setVisibility(View.VISIBLE);
+            addPhotoButton.setText("Add more photos");
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -287,6 +361,61 @@ public class AddWarrantyFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onAddSalaryComplete() {
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+
+    }
+
+    @Override
+    public void onAddWarrantyComplete() {
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+
+    }
+
+    @Override
+    public void onAddMonthlyBillsComplete() {
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> CategoryList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+
     }
 
     /**

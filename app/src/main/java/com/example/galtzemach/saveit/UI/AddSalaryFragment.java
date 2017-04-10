@@ -153,8 +153,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        
-        
+
         //Inflate the layout for this fragment
         view = inflater.inflate(fragment_add_salary, container, false);
 
@@ -220,7 +219,6 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
             public void onClick(View view) {
                 if (checkAllFields() ){
                     createSalaryObject();
-//                    send new salary to db ///
                 }
             }
         });
@@ -363,6 +361,8 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Toast.makeText(getContext(), "onActivityResult", Toast.LENGTH_SHORT).show();
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
             Uri uri = data.getData();

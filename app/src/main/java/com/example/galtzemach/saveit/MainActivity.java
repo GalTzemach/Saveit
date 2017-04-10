@@ -29,6 +29,7 @@ import com.example.galtzemach.saveit.BL.YearsSalaryAdapter;
 import com.example.galtzemach.saveit.BL.YearsWarrantyAdapter;
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment;
+import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment.OnFragmentInteractionListener;
 import com.example.galtzemach.saveit.UI.AddSalaryFragment;
 import com.example.galtzemach.saveit.UI.AddWarrantyFragment;
 import com.example.galtzemach.saveit.UI.DataReadyListener;
@@ -45,7 +46,8 @@ import java.util.ArrayList;
 
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
-public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
+
+public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, OnFragmentInteractionListener, DataReadyListener {
 
     private final String TAG = this.getClass().toString();
 
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
         mDataBase = FirebaseDatabase.getInstance();
 
         // create instance of data base class and register as listener
@@ -159,8 +162,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         dataBase.registerListener(this);
 
         ///
-        user_id = mAuth.getCurrentUser().getUid();
-
+        user_id = null;
 
         // check if user sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -172,6 +174,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     user_id = mAuth.getCurrentUser().getUid();
                     mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    dataBase.getYearsPerUser_salary(user_id);
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -183,10 +188,10 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                 }
             }
         };
-
         fillArrays();
 
         listView = (ListView) findViewById(R.id.main_list_view);
+        listView.setPadding(15, 15, 15, 15);
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.NestedScrollView_main);
 //        nestedScrollView.setNestedScrollingEnabled(true);
@@ -279,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
-        dataBase.getYearsPerUser_salary(user_id);
+
     }
 
     @Override
