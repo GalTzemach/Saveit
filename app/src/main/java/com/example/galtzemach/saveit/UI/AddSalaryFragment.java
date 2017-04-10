@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -88,12 +89,16 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     private Button mCreateSalaryBtn;
     private ImageButton mAddImageBtn;
 
+    private TextView numAddedTextView;
+    private Button removeAllPhotosButton;
+    private Button addPhotoButton;
+
 
     private Salary tempSalary;
 
     private ArrayList<Uri> uploadUriArr;
 
-    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int CAMERA_INTENT = 1;
     private static final int GALLERY_INTENT = 2;
 
     private DataBase db;
@@ -148,6 +153,8 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        
+        
         //Inflate the layout for this fragment
         view = inflater.inflate(fragment_add_salary, container, false);
 
@@ -156,13 +163,13 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         mUserRef = mDataBase.getReference().child("Users").child(user_id); ///.getRef();
 
         //removeAllPhotosButton
-        final Button removeAllPhotosButton = (Button) view.findViewById(R.id.s_remove_photos);
+        removeAllPhotosButton = (Button) view.findViewById(R.id.s_remove_photos);
 
         //numAddedTextView
-        final TextView numAddedTextView = (TextView) view.findViewById(R.id.s_num_added_photos);
+        numAddedTextView = (TextView) view.findViewById(R.id.s_num_added_photos);
 
         //addPhotoButton
-        final Button addPhotoButton = (Button) view.findViewById(R.id.s_add_photos);
+        addPhotoButton = (Button) view.findViewById(R.id.s_add_photos);
 
         //okButton
         Button okButton = (Button) view.findViewById(R.id.s_ok);
@@ -187,21 +194,10 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         if (menuItem.getItemId() == R.id.from_camera) {//from camera
-//                            photoFromCamera();
-                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(0).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                            photoFromCamera();
                         } else { //from gallery
-//                            photoFromGallery();
-                            Toast.makeText(getContext(), "item " + addPhotoPopupMenu.getMenu().getItem(1).getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                            photoFromGallery();
                         }
-
-                        ///if size of arr photos >= 1
-                        numAddedTextView.setVisibility(View.VISIBLE);
-                        numAddedTextView.setText("X Photo added");
-                        removeAllPhotosButton.setVisibility(View.VISIBLE);
-
-
-                        ///just if some photo added
-                        addPhotoButton.setText("Add more photos");
 
                         return true;
                     }
@@ -212,10 +208,10 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         removeAllPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                uploadUriArr.clear();
                 addPhotoButton.setText("Add photo");
                 numAddedTextView.setVisibility(View.INVISIBLE);
                 view.setVisibility(View.INVISIBLE);
-                ///remove photos
             }
         });
 
@@ -233,10 +229,21 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         return view;
     }
 
+    private void photoFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, GALLERY_INTENT);
+    }
+
+    private void photoFromCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_INTENT);
+    }
+
     private void createSalaryObject() {
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
         Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
-        MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, null);
+        MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, uploadUriArr);
     }
 
     private boolean checkAllFields() {
@@ -358,12 +365,19 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
-
             Uri uri = data.getData();
-
             uploadUriArr.add(uri);
 
-            Toast.makeText(getContext(), "add uri to upload Arr", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == CAMERA_INTENT && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            uploadUriArr.add(uri);
+        }
+
+        if(uploadUriArr.size() >= 1) {
+            numAddedTextView.setVisibility(View.VISIBLE);
+            numAddedTextView.setText((uploadUriArr.size() + " Photo added"));
+            removeAllPhotosButton.setVisibility(View.VISIBLE);
+            addPhotoButton.setText("Add more photos");
         }
 
     }

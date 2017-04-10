@@ -63,8 +63,28 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private ArrayList<Salary> salaryArrayList;
     private ArrayList<Warranty> warrantyArrayList;
     private ArrayList<MonthlyBills> monthlyBillsArrayList;
-    private ArrayList<String> yearsMonthlyBillsList;
     private ArrayList<String> yearsMonthlyBillsArraylist;
+
+    private enum Category {salary, warranty, monthlyBills};
+    private Category currentCategory;
+    private enum Mode {pull, pushh};
+    private Mode currentMode;
+
+
+    private FloatingActionButton fab;
+    private BottomNavigationView bottomNavigationView;
+    private NestedScrollView nestedScrollView;
+    private ListView listView;
+    private AddSalaryFragment addSalaryFragment;
+    private AddWarrantyFragment addWarrantyFragment;
+    private AddMonthlyBillsFragment addMonthlyBillsFragment;
+
+    private ArrayList<String> yearArrayList;
+    private ArrayList<String> photosArrayList;
+    private String[] yearArr;
+    private String[] emptyArr = new String[0];
+
+    public static String user_id;
 
     @Override
     public void onAddSalaryComplete() {
@@ -124,27 +144,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
         openMonthlyBillsMonthList(monthlyBillsList);
     }
-
-    private enum Category {salary, warranty, monthlyBills};
-    private Category currentCategory;
-    private enum Mode {pull, pushh};
-    private Mode currentMode;
-
-
-    private FloatingActionButton fab;
-    private BottomNavigationView bottomNavigationView;
-    private NestedScrollView nestedScrollView;
-    private ListView listView;
-    private AddSalaryFragment addSalaryFragment;
-    private AddWarrantyFragment addWarrantyFragment;
-    private AddMonthlyBillsFragment addMonthlyBillsFragment;
-
-    private ArrayList<String> yearArrayList;
-    private ArrayList<String> photosArrayList;
-    private String[] yearArr;
-    private String[] emptyArr = new String[0];
-
-    public static String user_id;
 
 
     @Override
