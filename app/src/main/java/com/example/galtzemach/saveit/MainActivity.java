@@ -49,6 +49,7 @@ import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragme
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, OnFragmentInteractionListener, DataReadyListener {
 
+    private boolean isFirst = true;
     private final String TAG = this.getClass().toString();
 
     // create FireBase auth feature
@@ -147,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         openMonthlyBillsMonthList(monthlyBillsList);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +181,10 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    dataBase.getYearsPerUser_salary(user_id);
+                    if(isFirst == true){
+                        isFirst = false;
+                        dataBase.getYearsPerUser_salary(user_id);
+                    }
 
                 } else {
                     // User is signed out
@@ -284,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
+        //dataBase.getYearsPerUser_salary(user_id);
+        //openAddSalaryFragment();
 
     }
 
@@ -366,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         notesTextView.setText(salaryArrayList.get(position).getNotes());
 
         ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
-        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
         photoSalaryListView.setAdapter(photosAdapter);
     }
 

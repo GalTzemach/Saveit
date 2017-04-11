@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.example.galtzemach.saveit.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -29,8 +30,8 @@ public class PhotosAdapter extends ArrayAdapter<String>{
         View rowView = context.getLayoutInflater().inflate(R.layout.photos_view, null, true);
 
         ImageView photoImageView = (ImageView) rowView.findViewById(R.id.image_view);
-//        photoImageView.setImageIcon();///
+        Picasso.with(context.getApplicationContext()).load(photosArrayList.get(position)).into(photoImageView);
 
-        return photoImageView;
+        return rowView;
     }
 }
