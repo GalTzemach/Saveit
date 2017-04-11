@@ -1,6 +1,7 @@
 package com.example.galtzemach.saveit.UI;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -19,10 +20,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.galtzemach.saveit.BL.MonthlyBills;
+import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,7 +38,7 @@ import java.util.Date;
  * Use the {@link AddWarrantyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddWarrantyFragment extends Fragment {
+public class AddWarrantyFragment extends Fragment implements DataReadyListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,6 +47,9 @@ public class AddWarrantyFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    // create progress dialog
+    private ProgressDialog mProgressDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,6 +73,7 @@ public class AddWarrantyFragment extends Fragment {
     private EditText costEditText;
     private EditText notesEditText;
 
+    private ArrayList<Uri> uploadUriArr;
 
     public AddWarrantyFragment() {
         // Required empty public constructor
@@ -96,6 +104,13 @@ public class AddWarrantyFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        uploadUriArr = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext());
+
+        // register as listener to DataBase
+        MainActivity.dataBase.registerListener(this);
     }
 
     @Override
@@ -128,7 +143,9 @@ public class AddWarrantyFragment extends Fragment {
         final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int y, int m, int d) {
-                Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+
+                ///Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+
                 purchaseDate = new Date(y,m,d);
                 purchaseDateEditText.setText(y+"/"+(m+1)+"/"+d);
             }
@@ -181,10 +198,11 @@ public class AddWarrantyFragment extends Fragment {
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                uploadUriArr.clear();
+
                 addButton.setText("Add photo");
                 numAddedTextView.setVisibility(View.INVISIBLE);
                 view.setVisibility(View.INVISIBLE);
-                ///remove photos
             }
         });
 
@@ -192,8 +210,9 @@ public class AddWarrantyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
+
                     createWarrantyObject();
-//                    send new salary to db ///
+
                 }
             }
         });
@@ -232,7 +251,6 @@ public class AddWarrantyFragment extends Fragment {
             resBool = false;
         }
 
-
         //cost
         if(costEditText.getText().length() != 0)
             cost = Float.parseFloat(costEditText.getText().toString());
@@ -248,7 +266,11 @@ public class AddWarrantyFragment extends Fragment {
     }
 
     private void createWarrantyObject() {
-        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+
+        mProgressDialog.setTitle("Please wait");
+        mProgressDialog.setMessage("Uploading to cloud...");
+        mProgressDialog.show();
+
         expireDate = purchaseDate;
         if(months != 0) {
             if (expireDate.getMonth() + months < 11) {
@@ -261,8 +283,9 @@ public class AddWarrantyFragment extends Fragment {
                 expireDate.setMonth((expireDate.getMonth() + (months % 12)) % 11);
             }
         }
+
         Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, null, notes);
-        MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, null);
+        MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, uploadUriArr);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -287,6 +310,65 @@ public class AddWarrantyFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreateSalaryComplete() {
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+
+    }
+
+    @Override
+    public void onCreateWarrantyComplete() {
+
+        Toast.makeText(getContext(), "Warranty successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        MainActivity.dataBase.getYearsPerUser_Warranty(MainActivity.user_id);
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+
+    }
+
+    @Override
+    public void onCreateMonthlyBillsComplete() {
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> CategoryList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+
     }
 
     /**

@@ -70,12 +70,6 @@ public class DataBase{
         listeners.add(dataReadyListener);
     }
 
-//    public ArrayList<Image> getPhotoArrPerItem(String user_id, String category, ) {
-//
-//        ArrayList<Image> photoArr = new ArrayList<>();
-//
-//    }
-
 
     public void createNewSalary(String user_id, final Salary salary, final ArrayList<Uri> uploadUriArr) {
 
@@ -111,7 +105,7 @@ public class DataBase{
                             // notify that complete
                             for (DataReadyListener dataReadyListener : listeners) {
 
-                                dataReadyListener.onAddSalaryComplete();
+                                dataReadyListener.onCreateSalaryComplete();
                             }
                         }
                     }
@@ -129,7 +123,7 @@ public class DataBase{
             // notify that complete
             for (DataReadyListener dataReadyListener : listeners) {
 
-                dataReadyListener.onAddSalaryComplete();
+                dataReadyListener.onCreateSalaryComplete();
             }
         }
     }
@@ -168,7 +162,7 @@ public class DataBase{
                         // notify that complete
                         for (DataReadyListener dataReadyListener : listeners) {
 
-                            dataReadyListener.onAddSalaryComplete();
+                            dataReadyListener.onCreateSalaryComplete();
                         }
                     }
                 }
@@ -184,7 +178,7 @@ public class DataBase{
             // notify that complete
             for (DataReadyListener dataReadyListener : listeners) {
 
-                dataReadyListener.onAddWarrantyComplete();
+                dataReadyListener.onCreateWarrantyComplete();
             }
         }
     }
@@ -222,7 +216,7 @@ public class DataBase{
                             // notify that complete
                             for (DataReadyListener dataReadyListener : listeners) {
 
-                                dataReadyListener.onAddMonthlyBillsComplete();
+                                dataReadyListener.onCreateMonthlyBillsComplete();
                             }
                         }
                     }
@@ -238,7 +232,7 @@ public class DataBase{
         // notify that complete
         for (DataReadyListener dataReadyListener : listeners) {
 
-            dataReadyListener.onAddMonthlyBillsComplete();
+            dataReadyListener.onCreateMonthlyBillsComplete();
         }
     }
     }

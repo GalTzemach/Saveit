@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,14 +23,8 @@ import android.widget.Toast;
 import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,21 +53,8 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     private String mParam1;
     private String mParam2;
 
-
     // create progress dialog
     private ProgressDialog mProgressDialog;
-
-    // create FireBaseDatabase feature + specific userRef
-    private FirebaseDatabase mDataBase;
-    private DatabaseReference mUserRef;
-
-    private DatabaseReference newSalaryRef;
-
-    // create StorageReference
-    private StorageReference mStorageRef;
-
-    // create FireBase auth feature
-    private FirebaseAuth mAuth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -86,23 +66,15 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     private  float netRevenueField = -1;
     private String notesField;
 
-
-    private Button mCreateSalaryBtn;
-    private ImageButton mAddImageBtn;
-
     private TextView numAddedTextView;
     private Button removeAllPhotosButton;
     private Button addPhotoButton;
-
-
-    private Salary tempSalary;
 
     private ArrayList<Uri> uploadUriArr;
 
     private static final int CAMERA_INTENT = 1;
     private static final int GALLERY_INTENT = 2;
 
-    private DataBase db;
 
     public AddSalaryFragment() {
 
@@ -129,8 +101,6 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        System.out.println(TAG + "Enter to onCreate");
-
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
@@ -138,33 +108,20 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // initialize fire base features
-        mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
         uploadUriArr = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(getContext());
 
-        //
-        db = new DataBase();
-        db.registerListener(this);
+        // register as listener to DataBase
+        MainActivity.dataBase.registerListener(this);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        System.out.println(TAG + "Enter to onCreateView");
-        
         //Inflate the layout for this fragment
         view = inflater.inflate(fragment_add_salary, container, false);
-
-        /// create correct specific user ref
-        String user_id = mAuth.getCurrentUser().getUid();
-        mUserRef = mDataBase.getReference().child("Users").child(user_id); ///.getRef();
 
         //removeAllPhotosButton
         removeAllPhotosButton = (Button) view.findViewById(R.id.s_remove_photos);
@@ -174,9 +131,6 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
         //addPhotoButton
         addPhotoButton = (Button) view.findViewById(R.id.s_add_photos);
-
-        //okButton
-        Button okButton = (Button) view.findViewById(R.id.s_ok);
 
         //monthSpinner
         Spinner monthSpinner = (Spinner) view.findViewById(R.id.s_month_spinner);
@@ -219,12 +173,15 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
             }
         });
 
+        //okButton
+        Button okButton = (Button) view.findViewById(R.id.s_ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
+
                     createSalaryObject();
-//                    send new salary to db ///
+
                 }
             }
         });
@@ -235,11 +192,8 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
     private void photoFromGallery() {
 
-        getFragmentManager().saveFragmentInstanceState(this);
-
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
-
         this.startActivityForResult(galleryIntent, GALLERY_INTENT);
     }
 
@@ -248,12 +202,14 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_INTENT);
 
-        //getActivity().startActivity
     }
 
     private void createSalaryObject() {
 
-        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+        mProgressDialog.setTitle("Please wait");
+        mProgressDialog.setMessage("Uploading to cloud...");
+        mProgressDialog.show();
+
         Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
         MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, uploadUriArr);
     }
@@ -288,7 +244,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         EditText notes = (EditText) view.findViewById(R.id.s_row_notes);
 
         Calendar calendar = Calendar.getInstance();
-//        Toast.makeText(getContext(), calendar.get(Calendar.DATE) + "", Toast.LENGTH_LONG).show();
+        /// Toast.makeText(getContext(), calendar.get(Calendar.DATE) + "", Toast.LENGTH_LONG).show();
 
         //check employer
         if (employerField == null) {
@@ -305,7 +261,6 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
             resBool = false;
         } else
             year.setTextColor(Color.BLACK);
-
 
         //check gross & net revenue
         if(grossRevenueField == -1 && netRevenueField == -1){
@@ -334,11 +289,8 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         return resBool;
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        System.out.println(TAG + "Enter to onActivityResult");
 
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -385,13 +337,11 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddSalaryComplete() {
+    public void onCreateSalaryComplete() {
 
-
-        getFragmentManager().getFragments().clear();
-
-
-
+        Toast.makeText(getContext(), "Salary successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        MainActivity.dataBase.getYearsPerUser_salary(MainActivity.user_id);
     }
 
     @Override
@@ -410,7 +360,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddWarrantyComplete() {
+    public void onCreateWarrantyComplete() {
 
     }
 
@@ -425,7 +375,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddMonthlyBillsComplete() {
+    public void onCreateMonthlyBillsComplete() {
 
     }
 

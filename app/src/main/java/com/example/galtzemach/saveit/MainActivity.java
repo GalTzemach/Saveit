@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     public static String user_id;
 
     @Override
-    public void onAddSalaryComplete() {
+    public void onCreateSalaryComplete() {
 
     }
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     @Override
-    public void onAddWarrantyComplete() {
+    public void onCreateWarrantyComplete() {
 
     }
 
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     @Override
-    public void onAddMonthlyBillsComplete() {
+    public void onCreateMonthlyBillsComplete() {
 
     }
 

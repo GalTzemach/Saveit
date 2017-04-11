@@ -1,5 +1,6 @@
 package com.example.galtzemach.saveit.UI;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -18,9 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.galtzemach.saveit.BL.MonthlyBills;
+import com.example.galtzemach.saveit.BL.Salary;
+import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -31,7 +35,7 @@ import java.util.Calendar;
  * Use the {@link AddMonthlyBillsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddMonthlyBillsFragment extends Fragment {
+public class AddMonthlyBillsFragment extends Fragment implements DataReadyListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,6 +44,9 @@ public class AddMonthlyBillsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    // create progress dialog
+    private ProgressDialog mProgressDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,6 +67,8 @@ public class AddMonthlyBillsFragment extends Fragment {
     private EditText sumEditText;
     private EditText notesEditText;
     private TextView numAddedTextView;
+
+    private ArrayList<Uri> uploadUriArr;
 
     public AddMonthlyBillsFragment() {
         // Required empty public constructor
@@ -90,6 +99,13 @@ public class AddMonthlyBillsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        uploadUriArr = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext());
+
+        // register as listener to DataBase
+        MainActivity.dataBase.registerListener(this);
     }
 
     @Override
@@ -165,8 +181,9 @@ public class AddMonthlyBillsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
+
                     createMonthlyBillsObject();
-//                    send new salary to db ///
+
                 }
             }
         });
@@ -175,7 +192,11 @@ public class AddMonthlyBillsFragment extends Fragment {
     }
 
     private void createMonthlyBillsObject() {
-        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+
+        mProgressDialog.setTitle("Please wait");
+        mProgressDialog.setMessage("Uploading to cloud...");
+        mProgressDialog.show();
+
         MonthlyBills newMonthlyBills = new MonthlyBills(category, year, month, sum, null, notes);
         MainActivity.dataBase.createNewMonthlyBills(MainActivity.user_id, newMonthlyBills, null);
     }
@@ -242,6 +263,65 @@ public class AddMonthlyBillsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreateSalaryComplete() {
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+
+    }
+
+    @Override
+    public void onCreateWarrantyComplete() {
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+
+    }
+
+    @Override
+    public void onCreateMonthlyBillsComplete() {
+
+        Toast.makeText(getContext(), "Monthly bills successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        MainActivity.dataBase.getCategoryPerUser(MainActivity.user_id);
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> CategoryList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+
+    }
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+
     }
 
     /**
