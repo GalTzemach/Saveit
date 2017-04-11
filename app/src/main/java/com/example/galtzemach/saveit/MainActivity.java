@@ -377,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         notesTextView.setText(salaryArrayList.get(position).getNotes());
 
         ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
+        photoSalaryListView.setNestedScrollingEnabled(true);
         PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
         photoSalaryListView.setAdapter(photosAdapter);
     }

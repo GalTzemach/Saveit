@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class PhotosAdapter extends ArrayAdapter<String>{
+
     private final Activity context;
     private final ArrayList<String> photosArrayList;
 
