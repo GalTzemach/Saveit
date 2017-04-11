@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     private final String TAG = this.getClass().toString();
 
+    private boolean isFirstTime = true;
+
     // create FireBase auth feature
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -139,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         openMonthlyBillsMonthList(monthlyBillsList);
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -167,8 +168,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     user_id = mAuth.getCurrentUser().getUid();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    // execute only if user log in
-                    //dataBase.getYearsPerUser_salary(user_id);
+
+                    if (isFirstTime) {
+                        dataBase.getYearsPerUser_salary(user_id);
+                        isFirstTime = false;
+                    }
+
 
                 } else {
                     // User is signed out
