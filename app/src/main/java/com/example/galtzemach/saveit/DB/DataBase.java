@@ -84,9 +84,9 @@ public class DataBase{
 
         final ArrayList<String> downloadArr = new ArrayList<>();
 
-        if (uploadUriArr != null) {
+        if (uploadUriArr.size() > 0) {
             //upload photo to storage
-            for (int i = 0; i < uploadUriArr.size() || i < 1; i++) {
+            for (int i = 0; i < uploadUriArr.size(); i++) {
 
                 final int finalI = i;
 
@@ -118,7 +118,8 @@ public class DataBase{
                 });
             }
         }
-        else if (uploadUriArr == null) {
+
+        else {
 
             salary.setDownloadUriArr(null);
 
@@ -130,9 +131,7 @@ public class DataBase{
 
                 dataReadyListener.onAddSalaryComplete();
             }
-
         }
-
     }
 
     public void createNewWarranty(String user_id, final Warranty warranty, final ArrayList<Uri> uploadUriArr) {

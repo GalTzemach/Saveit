@@ -27,13 +27,11 @@ import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +48,9 @@ import static com.example.galtzemach.saveit.R.layout.fragment_add_salary;
  * create an instance of this fragment.
  */
 public class AddSalaryFragment extends Fragment implements DataReadyListener {
+
+    private final String TAG = this.getClass().toString();
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -127,6 +128,9 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        System.out.println(TAG + "Enter to onCreate");
+
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
@@ -153,7 +157,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        
+        System.out.println(TAG + "Enter to onCreateView");
         
         //Inflate the layout for this fragment
         view = inflater.inflate(fragment_add_salary, container, false);
@@ -230,17 +234,25 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
     private void photoFromGallery() {
+
+        getFragmentManager().saveFragmentInstanceState(this);
+
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, GALLERY_INTENT);
+
+        this.startActivityForResult(galleryIntent, GALLERY_INTENT);
     }
 
     private void photoFromCamera() {
+
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_INTENT);
+
+        //getActivity().startActivity
     }
 
     private void createSalaryObject() {
+
         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
         Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
         MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, uploadUriArr);
@@ -323,45 +335,11 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     }
 
 
-
-    private void createNewSalary() {
-
-        newSalaryRef = mUserRef.child("Salary").push();
-
-        //upload photo to storage
-        for (int i = 0; i < uploadUriArr.size(); i++) {
-
-            final int finalI = i;
-
-            StorageReference filePath = mStorageRef.child("Photos").child(uploadUriArr.get(i).getLastPathSegment());
-
-            filePath.putFile(uploadUriArr.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                    String tempUri = taskSnapshot.getDownloadUrl().toString();
-
-                    newSalaryRef.child("downloadUri").push().setValue(tempUri);
-
-                    if (finalI == uploadUriArr.size()-1) {
-
-                        mProgressDialog.dismiss();
-                        Toast.makeText(getContext(), "Photo upload finished", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-            });
-        }
-        // create new salary object and save it on data base
-
-        //tempSalary = new Salary("Intel", 2017, 01, 20000, 15000, "Good place");
-        tempSalary = new Salary("IBM", 2016, 02, 10000, 8000, "Better place");
-        newSalaryRef.setValue(tempSalary);
-
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        System.out.println(TAG + "Enter to onActivityResult");
+
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
@@ -408,6 +386,11 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
     @Override
     public void onAddSalaryComplete() {
+
+
+        getFragmentManager().getFragments().clear();
+
+
 
     }
 

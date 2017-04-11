@@ -38,8 +38,6 @@ import com.example.galtzemach.saveit.UI.dummy.DummyContent;
 import com.example.galtzemach.saveit.UI.dummy.SalaryFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -52,10 +50,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     // create FireBase auth feature
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
-    // create FireBaseDatabase feature + specific userRef
-    private FirebaseDatabase mDataBase;
-    private DatabaseReference mUserRef;
 
 
     public static DataBase dataBase;
@@ -148,19 +142,20 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        System.out.println(TAG + "Enter to onCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance();
 
         // create instance of data base class and register as listener
         dataBase = new DataBase();
         dataBase.registerListener(this);
 
-        ///
-        user_id = mAuth.getCurrentUser().getUid();
-
+        //user_id = mAuth.getCurrentUser().getUid();
+        user_id = null;
 
         // check if user sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -170,8 +165,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                 if (user != null) {
                     // User is signed in
                     user_id = mAuth.getCurrentUser().getUid();
-                    mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    // execute only if user log in
+                    //dataBase.getYearsPerUser_salary(user_id);
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -279,7 +277,22 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
-        dataBase.getYearsPerUser_salary(user_id);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        System.out.println(TAG + "Enter to onActivityResult");
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //nestedScrollView.removeAllViews();
+
+        //addSalaryFragment = AddSalaryFragment.newInstance("g", "t");
+
+        //getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), addSalaryFragment).commit();
+
     }
 
     @Override
