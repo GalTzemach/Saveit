@@ -16,10 +16,10 @@ public class MonthlyBills {
 
     private ArrayList<String> downloadUriArr;
 
-    public MonthlyBills(Category category, int year, int month, float sum, String notes) {
+    public MonthlyBills() {
     }
 
-    public MonthlyBills(Category category, int year, int month, float sum, String[] refPhotoArr, String notes) {
+    public MonthlyBills(Category category, int year, int month, float sum, String notes) {
         this.category = category;
         this.year = year;
         this.month = month;

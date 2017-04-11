@@ -18,10 +18,10 @@ public class Warranty {
 
     private ArrayList<String> downloadUriArr;
 
-    public Warranty(Category category, String name, int months, Date purchaseDate, Date expireDate, float cost, String notes) {
+    public Warranty() {
     }
 
-    public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String[] refPhotoArr, String notes) {
+    public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String notes) {
         this.category = category;
         this.name = name;
         this.periodInMonths = periodInMonths;
