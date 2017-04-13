@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public interface DataReadyListener {
 
     // Salary
-    void onAddSalaryComplete();
+    void onCreateSalaryComplete();
 
     void onEmployersListReady(ArrayList<String> employersList);
     void onYearsListReady_Salary(ArrayList<String> yearsList);
@@ -21,13 +21,13 @@ public interface DataReadyListener {
 
 
     // Warranty
-    void onAddWarrantyComplete();
+    void onCreateWarrantyComplete();
 
     void onYearsListReady_Warranty(ArrayList<String> yearsList);
     void onWarrantyListReady(ArrayList<Warranty> warrantyList);
 
     // MonthlyBills
-    void onAddMonthlyBillsComplete();
+    void onCreateMonthlyBillsComplete();
 
     void onCategoryListReady(ArrayList<String> CategoryList);
     void onYearsListReady_MonthlyBills(ArrayList<String> yearsList);

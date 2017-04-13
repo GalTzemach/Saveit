@@ -48,7 +48,7 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link AddWarrantyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddWarrantyFragment extends Fragment implements DataReadyListener {
+public class AddWarrantyFragment extends Fragment implements DataReadyListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,18 +60,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
 
     // create progress dialog
     private ProgressDialog mProgressDialog;
-
-    // create FireBaseDatabase feature + specific userRef
-    private FirebaseDatabase mDataBase;
-    private DatabaseReference mUserRef;
-
-    private DatabaseReference newSalaryRef;
-
-    // create StorageReference
-    private StorageReference mStorageRef;
-
-    // create FireBase auth feature
-    private FirebaseAuth mAuth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -137,18 +125,12 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // initialize fire base features
-        mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
         uploadUriArr = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(getContext());
 
-        //
-        db = new DataBase();
-        db.registerListener(this);
+        // register as listener to DataBase
+        MainActivity.dataBase.registerListener(this);
     }
 
     @Override
@@ -181,7 +163,9 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
         final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int y, int m, int d) {
-                Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+
+                ///Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+
                 purchaseDate = new Date(y,m,d);
                 purchaseDateEditText.setText(y+"/"+(m+1)+"/"+d);
             }
@@ -224,6 +208,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
             @Override
             public void onClick(View view) {
                 uploadUriArr.clear();
+
                 addPhotoButton.setText("Add photo");
                 numAddedTextView.setVisibility(View.INVISIBLE);
                 view.setVisibility(View.INVISIBLE);
@@ -234,7 +219,9 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
+
                     createWarrantyObject();
+
                 }
             }
         });
@@ -273,7 +260,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
             resBool = false;
         }
 
-
         //cost
         if(costEditText.getText().length() != 0)
             cost = Float.parseFloat(costEditText.getText().toString());
@@ -300,7 +286,11 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
     }
 
     private void createWarrantyObject() {
-        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+
+        mProgressDialog.setTitle("Please wait");
+        mProgressDialog.setMessage("Uploading to cloud...");
+        mProgressDialog.show();
+
         expireDate = purchaseDate;
         if(months != 0) {
             if (expireDate.getMonth() + months < 11) {
@@ -364,7 +354,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddSalaryComplete() {
+    public void onCreateSalaryComplete() {
 
     }
 
@@ -384,7 +374,11 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddWarrantyComplete() {
+    public void onCreateWarrantyComplete() {
+
+        Toast.makeText(getContext(), "Warranty successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        MainActivity.dataBase.getYearsPerUser_Warranty(MainActivity.user_id);
 
     }
 
@@ -399,7 +393,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener {
     }
 
     @Override
-    public void onAddMonthlyBillsComplete() {
+    public void onCreateMonthlyBillsComplete() {
 
     }
 

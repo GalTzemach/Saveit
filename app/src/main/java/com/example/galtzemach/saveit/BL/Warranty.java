@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Warranty {
 
-    public enum Category {a, b, c, d, e, f, g, h}
+    public enum Category {General, Electricity, Water, Arnona, Gas, Phones, Internet, TV}
     private Category category;
     private String name;
     private int periodInMonths;

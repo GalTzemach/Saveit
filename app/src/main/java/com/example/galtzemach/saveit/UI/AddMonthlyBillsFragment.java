@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.BL.Salary;
+import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
@@ -58,18 +60,6 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     // create progress dialog
     private ProgressDialog mProgressDialog;
 
-    // create FireBaseDatabase feature + specific userRef
-    private FirebaseDatabase mDataBase;
-    private DatabaseReference mUserRef;
-
-    private DatabaseReference newSalaryRef;
-
-    // create StorageReference
-    private StorageReference mStorageRef;
-
-    // create FireBase auth feature
-    private FirebaseAuth mAuth;
-
     private OnFragmentInteractionListener mListener;
 
     private View view;
@@ -94,8 +84,6 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
 
     private static final int CAMERA_INTENT = 1;
     private static final int GALLERY_INTENT = 2;
-
-    private DataBase db;
 
     public AddMonthlyBillsFragment() {
         // Required empty public constructor
@@ -127,18 +115,12 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // initialize fire base features
-        mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
         uploadUriArr = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(getContext());
 
-        //
-        db = new DataBase();
-        db.registerListener(this);
+        // register as listener to DataBase
+        MainActivity.dataBase.registerListener(this);
     }
 
     @Override
@@ -203,7 +185,9 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
+
                     createMonthlyBillsObject();
+
                 }
             }
         });
@@ -223,7 +207,11 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     }
 
     private void createMonthlyBillsObject() {
-        Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+
+        mProgressDialog.setTitle("Please wait");
+        mProgressDialog.setMessage("Uploading to cloud...");
+        mProgressDialog.show();
+
         MonthlyBills newMonthlyBills = new MonthlyBills(category, year, month, sum, notes);
         MainActivity.dataBase.createNewMonthlyBills(MainActivity.user_id, newMonthlyBills, uploadUriArr);
     }
@@ -315,7 +303,7 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     }
 
     @Override
-    public void onAddSalaryComplete() {
+    public void onCreateSalaryComplete() {
 
     }
 
@@ -335,7 +323,7 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     }
 
     @Override
-    public void onAddWarrantyComplete() {
+    public void onCreateWarrantyComplete() {
 
     }
 
@@ -350,7 +338,11 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     }
 
     @Override
-    public void onAddMonthlyBillsComplete() {
+    public void onCreateMonthlyBillsComplete() {
+
+        Toast.makeText(getContext(), "Monthly bills successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        MainActivity.dataBase.getCategoryPerUser(MainActivity.user_id);
 
     }
 

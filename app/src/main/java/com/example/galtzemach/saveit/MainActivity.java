@@ -46,6 +46,7 @@ import java.util.ArrayList;
 
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
+public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, OnFragmentInteractionListener, DataReadyListener {
 
@@ -55,10 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     // create FireBase auth feature
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
-    // create FireBaseDatabase feature + specific userRef
-    private FirebaseDatabase mDataBase;
-    private DatabaseReference mUserRef;
 
 
     public static DataBase dataBase;
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     public static String user_id;
 
     @Override
-    public void onAddSalaryComplete() {
+    public void onCreateSalaryComplete() {
 
     }
 
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     @Override
-    public void onAddWarrantyComplete() {
+    public void onCreateWarrantyComplete() {
 
     }
 
@@ -128,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     @Override
-    public void onAddMonthlyBillsComplete() {
+    public void onCreateMonthlyBillsComplete() {
 
     }
 
@@ -161,13 +158,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
         mAuth = FirebaseAuth.getInstance();
 
-        mDataBase = FirebaseDatabase.getInstance();
-
         // create instance of data base class and register as listener
         dataBase = new DataBase();
         dataBase.registerListener(this);
 
-        ///
+        //user_id = mAuth.getCurrentUser().getUid();
         user_id = null;
 
         // check if user sign in
@@ -178,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                 if (user != null) {
                     // User is signed in
                     user_id = mAuth.getCurrentUser().getUid();
-                    mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                     if(isFirst == true){
@@ -197,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                 }
             }
         };
+
         fillArrays();
 
         listView = (ListView) findViewById(R.id.main_list_view);
@@ -293,9 +288,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
-        //dataBase.getYearsPerUser_salary(user_id);
-        //openAddSalaryFragment();
-
+        dataBase.getYearsPerUser_salary(user_id);
     }
 
     @Override
