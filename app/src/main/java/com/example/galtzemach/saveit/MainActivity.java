@@ -29,7 +29,6 @@ import com.example.galtzemach.saveit.BL.YearsSalaryAdapter;
 import com.example.galtzemach.saveit.BL.YearsWarrantyAdapter;
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment;
-import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment.OnFragmentInteractionListener;
 import com.example.galtzemach.saveit.UI.AddSalaryFragment;
 import com.example.galtzemach.saveit.UI.AddWarrantyFragment;
 import com.example.galtzemach.saveit.UI.DataReadyListener;
@@ -39,16 +38,12 @@ import com.example.galtzemach.saveit.UI.dummy.DummyContent;
 import com.example.galtzemach.saveit.UI.dummy.SalaryFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
-
-public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, OnFragmentInteractionListener, DataReadyListener {
 
     private boolean isFirst = true;
     private final String TAG = this.getClass().toString();
@@ -85,65 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private String[] emptyArr = new String[0];
 
     public static String user_id;
-
-    @Override
-    public void onCreateSalaryComplete() {
-
-    }
-
-    @Override
-    public void onEmployersListReady(ArrayList<String> employersList) {
-
-    }
-
-    @Override
-    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
-
-        openSalaryList(yearsList);
-
-    }
-
-    @Override
-    public void onSalaryListReady(ArrayList<Salary> salaryList) {
-        openSalaryMonthList(salaryList);
-    }
-
-    @Override
-    public void onCreateWarrantyComplete() {
-
-    }
-
-    @Override
-    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
-        openWarrantyList(yearsList);
-    }
-
-
-    @Override
-    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
-        openWarrantyNameList(warrantyList);
-    }
-
-    @Override
-    public void onCreateMonthlyBillsComplete() {
-
-    }
-
-    @Override
-    public void onCategoryListReady(ArrayList<String> categoryList) {
-        openMonthlyBillsCategoryList(categoryList);
-    }
-
-    @Override
-    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
-        openMonthlyBillsYearList(yearsList);
-    }
-
-
-    @Override
-    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
-        openMonthlyBillsMonthList(monthlyBillsList);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -288,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         });
 
         initialDefault();
-        dataBase.getYearsPerUser_salary(user_id);
     }
 
     @Override
@@ -591,4 +526,64 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 //            }
 //        });
     }
+
+    @Override
+    public void onCreateSalaryComplete() {
+
+    }
+
+    @Override
+    public void onEmployersListReady(ArrayList<String> employersList) {
+
+    }
+
+    @Override
+    public void onYearsListReady_Salary(ArrayList<String> yearsList) {
+
+        openSalaryList(yearsList);
+
+    }
+
+    @Override
+    public void onSalaryListReady(ArrayList<Salary> salaryList) {
+        openSalaryMonthList(salaryList);
+    }
+
+    @Override
+    public void onCreateWarrantyComplete() {
+
+    }
+
+    @Override
+    public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+        openWarrantyList(yearsList);
+    }
+
+
+    @Override
+    public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+        openWarrantyNameList(warrantyList);
+    }
+
+    @Override
+    public void onCreateMonthlyBillsComplete() {
+
+    }
+
+    @Override
+    public void onCategoryListReady(ArrayList<String> categoryList) {
+        openMonthlyBillsCategoryList(categoryList);
+    }
+
+    @Override
+    public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+        openMonthlyBillsYearList(yearsList);
+    }
+
+
+    @Override
+    public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+        openMonthlyBillsMonthList(monthlyBillsList);
+    }
+
 }
