@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         listView.setPadding(15, 15, 15, 15);
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.NestedScrollView_main);
-//        nestedScrollView.setNestedScrollingEnabled(true);
+        nestedScrollView.setNestedScrollingEnabled(true);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation_main);
 //        bottomNavigationView.getMenu().getItem(0).setChecked(true);
@@ -158,6 +158,13 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(currentCategory == Category.salaryMonth || currentCategory == Category.salaryItem)
+                    currentCategory = Category.salaryList;
+                else if (currentCategory == Category.warrantyName || currentCategory == Category.warrantyItem)
+                    currentCategory = Category.warrantyList;
+                else if (currentCategory == Category.monthlyBillsYear || currentCategory == Category.monthlyBillsMonth || currentCategory == Category.monthlyBillsItem)
+                    currentCategory = Category.monthlyBillsList;
 
                 switch (currentCategory){
                     case salaryList:
@@ -630,7 +637,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     @Override
     public void onCreateSalaryComplete() {
 
-        this.currentMode = Mode.pull;
     }
 
     @Override
@@ -650,7 +656,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     @Override
     public void onCreateWarrantyComplete() {
 
-        this.currentMode = Mode.pull;
     }
 
     @Override
@@ -671,7 +676,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     @Override
     public void onCreateMonthlyBillsComplete() {
 
-        this.currentMode = Mode.pull;
     }
 
     @Override

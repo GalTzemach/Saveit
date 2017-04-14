@@ -353,8 +353,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
         Toast.makeText(getContext(), "Warranty successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
 
-        // change mode on main activity
-        MainActivity.dataBase.getYearsPerUser_Warranty(MainActivity.user_id);
+        MainActivity.fab.callOnClick();
 
         uploadUriArr.clear();
 

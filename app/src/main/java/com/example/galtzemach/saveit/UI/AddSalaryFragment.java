@@ -342,7 +342,7 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
         Toast.makeText(getContext(), "Salary successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
 
-        MainActivity.dataBase.getYearsPerUser_salary(MainActivity.user_id);
+        MainActivity.fab.callOnClick();
         uploadUriArr.clear();
     }
 
