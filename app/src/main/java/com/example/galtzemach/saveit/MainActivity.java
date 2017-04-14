@@ -1,5 +1,6 @@
 package com.example.galtzemach.saveit;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.galtzemach.saveit.BL.MonthlyBills;
@@ -46,14 +48,12 @@ import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragme
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
 
-    private Bundle lastState;
     private boolean isFirst = true;
     private final String TAG = this.getClass().toString();
 
     // create FireBase auth feature
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
 
     public static DataBase dataBase;
 
@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     public static String user_id;
 
+    // create progress dialog
+    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -103,6 +107,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         //user_id = mAuth.getCurrentUser().getUid();
         user_id = null;
 
+        mProgressDialog = new ProgressDialog(this);
+        mProgressBar = new ProgressBar(this);
+
+        mProgressDialog.setMessage("Verifying permission");
+        mProgressDialog.show();
+
         // check if user sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -117,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         isFirst = false;
                         dataBase.getYearsPerUser_salary(user_id);
                     }
-
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -125,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                     Intent LogInIntent = new Intent(MainActivity.this, LogInActivity.class);
                     LogInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(LogInIntent);
-
                 }
             }
         };
@@ -156,6 +164,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getYearsPerUser_salary(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -168,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getYearsPerUser_Warranty(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -180,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getCategoryPerUser(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
                         }
                         else {
                             currentMode = Mode.pushh;
@@ -205,8 +222,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
                         if (currentMode == Mode.pushh)
                             openAddSalaryFragment();
-                        else
+                        else {
                             dataBase.getYearsPerUser_salary(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
                         return true;
 
 
@@ -215,8 +236,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
                         if (currentMode == Mode.pushh)
                             openAddWarrantyFragment();
-                        else
+                        else {
                             dataBase.getYearsPerUser_Warranty(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
                         return true;
 
 
@@ -225,8 +250,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
                         if (currentMode == Mode.pushh)
                             openAddMonthlyBillsFragment();
-                        else
+                        else {
                             dataBase.getCategoryPerUser(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
                         return true;
                 }
                 return false;
@@ -580,7 +609,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private void logOutUser() {
 
         mAuth.signOut();
-
     }
 
     @Override
@@ -602,60 +630,71 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     @Override
     public void onCreateSalaryComplete() {
 
-    }
-
-    @Override
-    public void onEmployersListReady(ArrayList<String> employersList) {
-
+        this.currentMode = Mode.pull;
     }
 
     @Override
     public void onYearsListReady_Salary(ArrayList<String> yearsList) {
 
+        mProgressDialog.dismiss();
         openSalaryList(yearsList);
-
     }
 
     @Override
     public void onSalaryListReady(ArrayList<Salary> salaryList) {
+
+        mProgressDialog.dismiss();
         openSalaryMonthList(salaryList);
     }
 
     @Override
     public void onCreateWarrantyComplete() {
 
+        this.currentMode = Mode.pull;
     }
 
     @Override
     public void onYearsListReady_Warranty(ArrayList<String> yearsList) {
+
+        mProgressDialog.dismiss();
         openWarrantyList(yearsList);
     }
 
 
     @Override
     public void onWarrantyListReady(ArrayList<Warranty> warrantyList) {
+
+        mProgressDialog.dismiss();
         openWarrantyNameList(warrantyList);
     }
 
     @Override
     public void onCreateMonthlyBillsComplete() {
 
+        this.currentMode = Mode.pull;
     }
 
     @Override
     public void onCategoryListReady(ArrayList<String> categoryList) {
+
+        mProgressDialog.dismiss();
         openMonthlyBillsCategoryList(categoryList);
     }
 
     @Override
     public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
+
+        mProgressDialog.dismiss();
         openMonthlyBillsYearList(yearsList);
     }
 
 
     @Override
     public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
+
+        mProgressDialog.dismiss();
         openMonthlyBillsMonthList(monthlyBillsList);
     }
+
 
 }

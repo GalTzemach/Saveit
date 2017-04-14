@@ -32,7 +32,6 @@ public class LogInActivity extends AppCompatActivity {
     private Button mLogInBtn;
     private Button mGoToRegisterBtn;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,30 +112,9 @@ public class LogInActivity extends AppCompatActivity {
 
     }
 
-//    private void checkUserExist() {
-//
-//        final String user_id = mAuth.getCurrentUser().getUid();
-//
-//        mDataBase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                if (! dataSnapshot.hasChild(user_id)) {
-//
-//                    Toast.makeText(LogInActivity.this, "You need create account first!", Toast.LENGTH_LONG).show();
-//
-//                } else {
-//
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
+    @Override
+    public void onBackPressed() {
 
+
+    }
 }

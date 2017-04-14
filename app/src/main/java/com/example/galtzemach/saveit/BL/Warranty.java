@@ -1,13 +1,12 @@
 package com.example.galtzemach.saveit.BL;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import java.util.ArrayList;
 
 public class Warranty {
 
-    public enum Category {General, Electricity, Water, Arnona, Gas, Phones, Internet, TV}
-    private Category category;
     private String name;
     private int periodInMonths;
     private Date purchaseDate;
@@ -21,8 +20,8 @@ public class Warranty {
     public Warranty() {
     }
 
-    public Warranty(Category category, String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String notes) {
-        this.category = category;
+    public Warranty(String name, int periodInMonths, Date purchaseDate, Date expiryDate, float cost, String notes) {
+
         this.name = name;
         this.periodInMonths = periodInMonths;
         this.purchaseDate = purchaseDate;
@@ -30,14 +29,6 @@ public class Warranty {
         this.cost = cost;
         this.refPhotoArr = refPhotoArr;
         this.notes = notes;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public int getPeriodInMonths() {
@@ -95,12 +86,13 @@ public class Warranty {
     @Override
     public String toString() {
         return "Warranty{" +
-                "category=" + category +
+                "name='" + name + '\'' +
                 ", periodInMonths=" + periodInMonths +
                 ", purchaseDate=" + purchaseDate +
                 ", expiryDate=" + expiryDate +
                 ", cost=" + cost +
                 ", notes='" + notes + '\'' +
+                ", refPhotoArr=" + Arrays.toString(refPhotoArr) +
                 ", downloadUriArr=" + downloadUriArr +
                 '}';
     }

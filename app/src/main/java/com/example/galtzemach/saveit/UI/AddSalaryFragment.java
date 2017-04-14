@@ -53,7 +53,6 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
     private String mParam1;
     private String mParam2;
 
-
     // create progress dialog
     private ProgressDialog mProgressDialog;
 
@@ -342,12 +341,9 @@ public class AddSalaryFragment extends Fragment implements DataReadyListener {
 
         Toast.makeText(getContext(), "Salary successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
-        MainActivity.fab.callOnClick();
-    }
 
-    @Override
-    public void onEmployersListReady(ArrayList<String> employersList) {
-
+        MainActivity.dataBase.getYearsPerUser_salary(MainActivity.user_id);
+        uploadUriArr.clear();
     }
 
     @Override

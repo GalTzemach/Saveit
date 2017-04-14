@@ -3,6 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="inputStroke">#A4A4A4</color>
+    <color name="button">#6698FF</color>
+    <color name="formBackground">#C2DFFF</color>
+
     <color name="primary_light">#C5CAE9</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>

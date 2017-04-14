@@ -95,7 +95,7 @@ public class DataBase{
                         downloadArr.add(tempUri);
 
                         // complete upload photo
-                        if (finalI == uploadUriArr.size() - 1) {
+                        if (downloadArr.size() == uploadUriArr.size()) {
 
                             salary.setDownloadUriArr(downloadArr);
 
@@ -152,7 +152,7 @@ public class DataBase{
                     downloadArr.add(tempUri);
 
                     // complete upload photo
-                    if (finalI == uploadUriArr.size() - 1) {
+                    if (downloadArr.size() == uploadUriArr.size()) {
 
                         warranty.setDownloadUriArr(downloadArr);
 
@@ -162,7 +162,7 @@ public class DataBase{
                         // notify that complete
                         for (DataReadyListener dataReadyListener : listeners) {
 
-                            dataReadyListener.onCreateSalaryComplete();
+                            dataReadyListener.onCreateWarrantyComplete();
                         }
                     }
                 }
@@ -206,7 +206,7 @@ public class DataBase{
                         String tempUri = taskSnapshot.getDownloadUrl().toString();
                         downloadArr.add(tempUri);
 
-                        if (finalI == uploadUriArr.size() - 1) {
+                        if (downloadArr.size() == uploadUriArr.size()) {
 
                             monthlyBills.setDownloadUriArr(downloadArr);
 
@@ -235,43 +235,6 @@ public class DataBase{
             dataReadyListener.onCreateMonthlyBillsComplete();
         }
     }
-    }
-
-    public void getEmployersPerUser(String user_id) {
-
-        employersList.clear();
-
-        mUserRef = mDataBase.getReference().child("Users").child(user_id).getRef();
-        mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Iterable<DataSnapshot> salaryItems = dataSnapshot.child("Salary").getChildren();
-
-                for (DataSnapshot salary : salaryItems) {
-
-                    String tempEmployer = salary.getValue(Salary.class).getEmployer();
-
-                    if (! employersList.contains(tempEmployer) ) {
-
-                        employersList.add(tempEmployer);
-                    }
-                }
-
-                // notify that complete
-                for (DataReadyListener dataReadyListener : listeners) {
-
-                        dataReadyListener.onEmployersListReady(employersList);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                Log.e(TAG, "The query failed!");
-            }
-        });
     }
 
     public void getYearsPerUser_salary(String user_id) {

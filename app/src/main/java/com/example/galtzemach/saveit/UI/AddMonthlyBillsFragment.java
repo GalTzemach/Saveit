@@ -300,11 +300,6 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     }
 
     @Override
-    public void onEmployersListReady(ArrayList<String> employersList) {
-
-    }
-
-    @Override
     public void onYearsListReady_Salary(ArrayList<String> yearsList) {
 
     }

@@ -13,19 +13,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
@@ -60,7 +57,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
 
     private View view;
 
-    private Warranty.Category category;
     private String name = null;
     private Date purchaseDate;
     private Date expireDate;
@@ -70,7 +66,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
     private EditText nameEditText;
     private EditText purchaseDateEditText;
     private Button okButton;
-    private Spinner categorySpinner;
     private EditText monthsEditText;
     private EditText costEditText;
     private EditText notesEditText;
@@ -79,16 +74,10 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
     private Button removeAllPhotosButton;
     private Button addPhotoButton;
 
-
-    private Salary tempSalary;
-
     private ArrayList<Uri> uploadUriArr;
 
     private static final int CAMERA_INTENT = 1;
     private static final int GALLERY_INTENT = 2;
-
-    private DataBase db;
-
 
     public AddWarrantyFragment() {
         // Required empty public constructor
@@ -141,12 +130,9 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
         removeAllPhotosButton = (Button) view.findViewById(R.id.w_remove_photos);
         numAddedTextView = (TextView) view.findViewById(R.id.w_num_added_photos);
         okButton = (Button) view.findViewById(R.id.w_ok);
-        categorySpinner = (Spinner) view.findViewById(R.id.w_category);
         monthsEditText = (EditText) view.findViewById(R.id.w_period_in_months);
         costEditText = (EditText) view.findViewById(R.id.w_cost);
         notesEditText = (EditText) view.findViewById(R.id.w_nots);
-
-        categorySpinner.setAdapter(new ArrayAdapter<Warranty.Category>(getContext(), android.R.layout.simple_spinner_item, Warranty.Category.values()));
 
         //get now date
         Calendar calendar = Calendar.getInstance();
@@ -158,6 +144,9 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
         final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int y, int m, int d) {
+
+                ///Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
+
                 purchaseDate = new Date(y,m,d);
                 purchaseDateEditText.setText(y+"/"+(m+1)+"/"+d);
             }
@@ -199,6 +188,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
         removeAllPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 uploadUriArr.clear();
 
                 addPhotoButton.setText("Add photo");
@@ -223,10 +213,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
 
     private boolean checkAllFields() {
         boolean resBool = true;
-
-        //category
-        category = (Warranty.Category) categorySpinner.getSelectedItem();
-
 
         //name
         if (nameEditText.getText().length() != 0)
@@ -296,7 +282,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
             }
         }
 
-        Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, notes);
+        Warranty newWarranty = new Warranty(name, months, purchaseDate, expireDate, cost, notes);
         MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, uploadUriArr);
     }
 
@@ -352,11 +338,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
     }
 
     @Override
-    public void onEmployersListReady(ArrayList<String> employersList) {
-
-    }
-
-    @Override
     public void onYearsListReady_Salary(ArrayList<String> yearsList) {
 
     }
@@ -371,7 +352,11 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
 
         Toast.makeText(getContext(), "Warranty successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
-        MainActivity.fab.callOnClick();
+
+        // change mode on main activity
+        MainActivity.dataBase.getYearsPerUser_Warranty(MainActivity.user_id);
+
+        uploadUriArr.clear();
 
     }
 

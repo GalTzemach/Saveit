@@ -3,113 +3,146 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment"
-    android:layout_marginBottom="100dp">
+    android:padding="20dp"
+    android:background="@color/formBackground"
+    tools:context="com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <Button
         android:id="@+id/m_remove"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
         android:text="Remove all photos"
         android:textColor="@color/Red"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@+id/m_add"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/m_sum" />
+        app:layout_constraintTop_toBottomOf="@+id/m_sum"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/m_ok"
-        android:layout_width="169dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
+        android:background="@drawable/button_background"
+        android:padding="10dp"
         android:text="Ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/m_notes" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/m_add"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
         android:text="Add photo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/m_sum" />
+        app:layout_constraintTop_toBottomOf="@+id/m_sum"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/m_num_photos_added"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:cursorVisible="false"
         android:textColor="@color/Green"
         app:layout_constraintLeft_toLeftOf="@+id/m_add"
-        app:layout_constraintRight_toRightOf="@+id/m_add"
-        app:layout_constraintTop_toBottomOf="@+id/m_add" />
+        app:layout_constraintTop_toBottomOf="@+id/m_add"
+        android:layout_marginStart="8dp" />
 
     <EditText
         android:id="@+id/m_notes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Notes"
         android:inputType="textPersonName"
+        android:padding="10dp"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/m_num_photos_added" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_remove"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/m_year"
-        android:layout_width="178dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Year"
         android:inputType="number"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/m_category_spinner" />
 
     <Spinner
         android:id="@+id/m_category_spinner"
-        android:layout_width="217dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/m_sum"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Sum"
         android:inputType="numberDecimal"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/m_year" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_year"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Spinner
         android:id="@+id/m_month_spinner"
-        android:layout_width="92dp"
+        android:layout_width="90dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/m_year"
-        app:layout_constraintTop_toBottomOf="@+id/m_category_spinner" />
+        android:background="@drawable/input_background"
+        android:padding="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_category_spinner"
+        android:layout_marginEnd="8dp" />
 
 </android.support.constraint.ConstraintLayout>
