@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         mProgressDialog = new ProgressDialog(this);
         mProgressBar = new ProgressBar(this);
 
-        mProgressDialog.setMessage("Verifying permission");
+        mProgressDialog.setMessage("Verifying authentication");
         mProgressDialog.show();
 
         // check if user sign in
