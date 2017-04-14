@@ -14,21 +14,16 @@ public interface DataReadyListener {
 
     // Salary
     void onCreateSalaryComplete();
-
-    void onEmployersListReady(ArrayList<String> employersList);
     void onYearsListReady_Salary(ArrayList<String> yearsList);
     void onSalaryListReady(ArrayList<Salary> salaryList);
 
-
     // Warranty
     void onCreateWarrantyComplete();
-
     void onYearsListReady_Warranty(ArrayList<String> yearsList);
     void onWarrantyListReady(ArrayList<Warranty> warrantyList);
 
     // MonthlyBills
     void onCreateMonthlyBillsComplete();
-
     void onCategoryListReady(ArrayList<String> CategoryList);
     void onYearsListReady_MonthlyBills(ArrayList<String> yearsList);
     void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList);

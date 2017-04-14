@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="100dp"
+    android:layout_marginBottom="0dp"
+    android:padding="20dp"
+    android:background="@color/formBackground"
     tools:context="com.example.galtzemach.saveit.UI.AddSalaryFragment"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
@@ -13,119 +15,156 @@
     <Button
         android:id="@+id/s_remove_photos"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
         android:text="Remove all photos"
         android:textColor="@color/Red"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@+id/s_add_photos"
-        app:layout_constraintTop_toBottomOf="@+id/s_net_revenue" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_net_revenue"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/s_employer"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
+        android:ems="10"
+        android:hint="Employer"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="8dp" />
+
+    <EditText
+        android:id="@+id/s_year"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Employer"
-        android:inputType="textPersonName"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/s_year"
-        android:layout_width="178dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Year"
         android:inputType="number"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/s_employer" />
 
     <Spinner
         android:id="@+id/s_month_spinner"
-        android:layout_width="92dp"
+        android:layout_width="90dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/s_year"
-        app:layout_constraintTop_toBottomOf="@+id/s_employer" />
+        android:background="@drawable/input_background"
+        android:padding="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_employer"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/s_net_revenue"
-        android:layout_width="148dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Net revenue"
         android:inputType="number|numberDecimal"
-        app:layout_constraintLeft_toRightOf="@+id/s_gross_revenue"
-        app:layout_constraintTop_toBottomOf="@+id/s_year" />
+        android:padding="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_gross_revenue"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/s_gross_revenue"
-        android:layout_width="148dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Groos revenue"
         android:inputType="number|numberDecimal"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/s_year" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_year"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/s_ok"
-        android:layout_width="169dp"
-        android:layout_height="60dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
+        android:background="@drawable/button_background"
+        android:padding="10dp"
         android:text="Ok"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/s_row_notes" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/s_add_photos"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
         android:text="Add photo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/s_gross_revenue" />
+        app:layout_constraintTop_toBottomOf="@+id/s_net_revenue"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/s_num_added_photos"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="8dp"
         android:cursorVisible="false"
         android:textColor="@color/Green"
         app:layout_constraintLeft_toLeftOf="@+id/s_add_photos"
-        app:layout_constraintRight_toRightOf="@+id/s_add_photos"
-        app:layout_constraintTop_toBottomOf="@+id/s_add_photos" />
+        app:layout_constraintTop_toBottomOf="@+id/s_add_photos"
+        android:layout_marginStart="8dp" />
 
     <EditText
         android:id="@+id/s_row_notes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/input_background"
         android:ems="10"
         android:hint="Notes"
         android:inputType="textPersonName"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/s_num_added_photos" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/s_remove_photos" />
 
 </android.support.constraint.ConstraintLayout>
