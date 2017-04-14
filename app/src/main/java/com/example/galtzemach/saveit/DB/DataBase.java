@@ -99,7 +99,7 @@ public class DataBase{
 
                             salary.setDownloadUriArr(downloadArr);
 
-                            // save the new salary on data base
+                            // save the new salaryList on data base
                             newItemRef.setValue(salary);
 
                             // notify that complete
@@ -117,7 +117,7 @@ public class DataBase{
 
             salary.setDownloadUriArr(null);
 
-            // save the new salary on data base
+            // save the new salaryList on data base
             newItemRef.setValue(salary);
 
             // notify that complete
@@ -156,7 +156,7 @@ public class DataBase{
 
                         warranty.setDownloadUriArr(downloadArr);
 
-                        // save the new salary on data base
+                        // save the new salaryList on data base
                         newItemRef.setValue(warranty);
 
                         // notify that complete
@@ -172,7 +172,7 @@ public class DataBase{
 
             warranty.setDownloadUriArr(null);
 
-            // save the new warranty on data base
+            // save the new warrantyList on data base
             newItemRef.setValue(warranty);
 
             // notify that complete
@@ -210,7 +210,7 @@ public class DataBase{
 
                             monthlyBills.setDownloadUriArr(downloadArr);
 
-                            // save the new salary on data base
+                            // save the new salaryList on data base
                             newItemRef.setValue(monthlyBills);
 
                             // notify that complete
@@ -226,7 +226,7 @@ public class DataBase{
 
         monthlyBills.setDownloadUriArr(null);
 
-        // save the new monthlyBills on data base
+        // save the new monthlyBillsList on data base
         newItemRef.setValue(monthlyBills);
 
         // notify that complete

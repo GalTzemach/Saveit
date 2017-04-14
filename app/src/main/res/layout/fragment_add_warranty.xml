@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.galtzemach.saveit.UI.AddWarrantyFragment">
+    tools:context="com.example.galtzemach.saveit.UI.AddWarrantyFragment"
+    android:layout_marginBottom="100dp">
 
     <!-- TODO: Update blank fragment layout -->
 

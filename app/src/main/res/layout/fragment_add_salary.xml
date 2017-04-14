@@ -6,7 +6,8 @@
     android:layout_marginBottom="100dp"
     tools:context="com.example.galtzemach.saveit.UI.AddSalaryFragment"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="81dp"
+    >
 
     <!-- TODO: Update blank fragment layout -->
 

@@ -28,11 +28,6 @@ import com.example.galtzemach.saveit.BL.Warranty;
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -163,9 +158,6 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
         final DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int y, int m, int d) {
-
-                ///Toast.makeText(getContext(), y + " " + m + " " + d, Toast.LENGTH_SHORT).show();
-
                 purchaseDate = new Date(y,m,d);
                 purchaseDateEditText.setText(y+"/"+(m+1)+"/"+d);
             }
@@ -303,6 +295,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
                 expireDate.setMonth((expireDate.getMonth() + (months % 12)) % 11);
             }
         }
+
         Warranty newWarranty = new Warranty(category, name, months, purchaseDate, expireDate, cost, notes);
         MainActivity.dataBase.createNewWarranty(MainActivity.user_id, newWarranty, uploadUriArr);
     }
@@ -378,7 +371,7 @@ public class AddWarrantyFragment extends Fragment implements DataReadyListener{
 
         Toast.makeText(getContext(), "Warranty successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
-        MainActivity.dataBase.getYearsPerUser_Warranty(MainActivity.user_id);
+        MainActivity.fab.callOnClick();
 
     }
 

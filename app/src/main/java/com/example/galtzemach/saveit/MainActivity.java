@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,6 +46,7 @@ import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragme
 
 public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
 
+    private Bundle lastState;
     private boolean isFirst = true;
     private final String TAG = this.getClass().toString();
 
@@ -60,13 +62,13 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private ArrayList<MonthlyBills> monthlyBillsArrayList;
     private ArrayList<String> yearsMonthlyBillsArraylist;
 
-    private enum Category {salary, warranty, monthlyBills};
+    private enum Category {salaryList, salaryMonth, salaryItem, warrantyList, warrantyName, warrantyItem, monthlyBillsList, monthlyBillsYear, monthlyBillsMonth, monthlyBillsItem};
     private Category currentCategory;
     private enum Mode {pull, pushh};
     private Mode currentMode;
 
 
-    private FloatingActionButton fab;
+    public static FloatingActionButton fab;
     private BottomNavigationView bottomNavigationView;
     private NestedScrollView nestedScrollView;
     private ListView listView;
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation_main);
 //        bottomNavigationView.getMenu().getItem(0).setChecked(true);
 
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -147,8 +150,9 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 switch (currentCategory){
-                    case salary:
+                    case salaryList:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getYearsPerUser_salary(user_id);
@@ -160,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         break;
 
 
-                    case warranty:
+                    case warrantyList:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getYearsPerUser_Warranty(user_id);
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         break;
 
 
-                    case monthlyBills:
+                    case monthlyBillsList:
                         if (currentMode == Mode.pushh) {
                             currentMode = Mode.pull;
                             dataBase.getCategoryPerUser(user_id);
@@ -183,6 +187,12 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
                         }
                         break;
                 }
+
+                if (currentMode == Mode.pull) {
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_add_white));
+                }else
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_backe_white));
+
                 }
         });
 
@@ -191,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_salary:
-                        currentCategory = Category.salary;
+                        currentCategory = Category.salaryList;
 
                         if (currentMode == Mode.pushh)
                             openAddSalaryFragment();
@@ -201,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
 
                     case R.id.navigation_warranty:
-                        currentCategory = Category.warranty;
+                        currentCategory = Category.warrantyList;
 
                         if (currentMode == Mode.pushh)
                             openAddWarrantyFragment();
@@ -211,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
 
                     case R.id.navigation_monthly_bills:
-                        currentCategory = Category.monthlyBills;
+                        currentCategory = Category.monthlyBillsList;
 
                         if (currentMode == Mode.pushh)
                             openAddMonthlyBillsFragment();
@@ -246,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     private void initialDefault() {
         currentMode = Mode.pull;
-        currentCategory = Category.salary;
+        currentCategory = Category.salaryList;
     }
 
     private void openAddSalaryFragment() {
@@ -267,7 +277,60 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), addMonthlyBillsFragment).commit();
     }
 
+
+    @Override
+    public void onBackPressed() {
+
+        if(currentMode == Mode.pull) {
+            switch (currentCategory) {
+                case salaryList:
+                    finish();
+                    break;
+
+                case salaryMonth:
+                    dataBase.getYearsPerUser_salary(user_id);
+                    break;
+
+                case salaryItem:
+                    dataBase.getYearsPerUser_salary(user_id);
+                    break;
+
+                case warrantyList:
+                    finish();
+                    break;
+
+                case warrantyName:
+                    dataBase.getYearsPerUser_Warranty(user_id);
+                    break;
+
+                case warrantyItem:
+                    dataBase.getYearsPerUser_Warranty(user_id);
+                    break;
+
+                case monthlyBillsList:
+                    finish();
+                    break;
+
+                case monthlyBillsYear:
+                    dataBase.getCategoryPerUser(user_id);
+                    break;
+
+                case monthlyBillsMonth:
+                    dataBase.getCategoryPerUser(user_id);
+
+                    break;
+
+                case monthlyBillsItem:
+                    dataBase.getCategoryPerUser(user_id);
+                    break;
+            }
+        }else{
+            fab.callOnClick();
+        }
+    }
+
     private void openSalaryList(final ArrayList<String> yearsSalaryArrayList) {
+        currentCategory = Category.salaryList;
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
         YearsSalaryAdapter yearAdapter = new YearsSalaryAdapter(this, yearsSalaryArrayList);
@@ -289,43 +352,40 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     private void openSalaryItem(int position) {
+        currentCategory = Category.salaryItem;
         nestedScrollView.removeAllViews();
         View salaryView = getLayoutInflater().inflate(R.layout.salary, nestedScrollView, true);
 
         TextView employerTextView = (TextView) salaryView.findViewById(R.id.salary_employer);
-                        employerTextView.setText(salaryArrayList.get(position).getEmployer());
+                        employerTextView.setText("Employer: " + salaryArrayList.get(position).getEmployer());
 
         TextView mYDateTextView = (TextView) salaryView.findViewById(R.id.salary_m_y);
-                        mYDateTextView.setText(salaryArrayList.get(position).getMonth() + "/" + salaryArrayList.get(position).getYear());
+                        mYDateTextView.setText("Date: " + salaryArrayList.get(position).getMonth() + "/" + salaryArrayList.get(position).getYear());
 
         TextView grossNetTextView = (TextView) salaryView.findViewById(R.id.salary_gross_net);
-                        grossNetTextView.setText(salaryArrayList.get(position).getGrossRevenue() + "  |  " + salaryArrayList.get(position).getNetRevenue());
+                        grossNetTextView.setText(salaryArrayList.get(position).getGrossRevenue() + "$  |  " + salaryArrayList.get(position).getNetRevenue() + "$");
 
         TextView notesTextView = (TextView) salaryView.findViewById(R.id.salary_notes);
-                        notesTextView.setText(salaryArrayList.get(position).getNotes());
+                        notesTextView.setText("Notes: " + salaryArrayList.get(position).getNotes());
 
-        ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
-        photoSalaryListView.setNestedScrollingEnabled(true);
-        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
-        photoSalaryListView.setAdapter(photosAdapter);
+        if(salaryArrayList.get(position).getDownloadUriArr() != null) {
+            ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
+            photoSalaryListView.setNestedScrollingEnabled(true);
+            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
+            photoSalaryListView.setAdapter(photosAdapter);
+        }
     }
 
     private void openSalaryMonthList(ArrayList<Salary> salaryList) {
+        currentCategory = Category.salaryMonth;
         salaryArrayList = salaryList;
         SalaryRowAdapter salaryRowAdapter = new SalaryRowAdapter(getApplicationContext(), salaryList);
         listView.setAdapter(salaryRowAdapter);
     }
 
-    private void openEmloyersList() {
-        nestedScrollView.removeAllViews();
-        nestedScrollView.addView(listView);
-
-        YearArrAdapter yearArrAdapter = new YearArrAdapter(this, yearArr);
-        listView.setAdapter(yearArrAdapter);
-    }
-
 
     private void openWarrantyList(final ArrayList<String> yearsList) {
+        currentCategory = Category.warrantyList;
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
         YearsWarrantyAdapter yearsWarrantyAdapter = new YearsWarrantyAdapter(this, yearsList);
@@ -348,39 +408,45 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     private void openWarrantyItem(ArrayList<Warranty> warrantyArrayList, int position) {
+        currentCategory = Category.warrantyItem;
         nestedScrollView.removeAllViews();
         View warrantyView = getLayoutInflater().inflate(R.layout.warranty, nestedScrollView, true);///
 
         TextView nameTextView = (TextView) warrantyView.findViewById(R.id.warranty_name);
-                        nameTextView.setText(warrantyArrayList.get(position).getName().toString());
+                        nameTextView.setText("Name: " + warrantyArrayList.get(position).getName().toString());
 
         TextView periodInMonthsTextView = (TextView) warrantyView.findViewById(R.id.warranty_in_months);
                         periodInMonthsTextView.setText("Period in months: " + warrantyArrayList.get(position).getPeriodInMonths());
 
         TextView purchaseDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_purchas_date);
-                        purchaseDateTextView.setText(warrantyArrayList.get(position).getPurchaseDate().getYear() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getMonth() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getDay() + "  | ");
+                        purchaseDateTextView.setText("purchase Date: " + warrantyArrayList.get(position).getPurchaseDate().getYear() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getMonth() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getDay() + "  | ");
 
         TextView expireDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_exp_date);
-                        expireDateTextView.setText(warrantyArrayList.get(position).getExpiryDate().getYear() +"/"+ warrantyArrayList.get(position).getExpiryDate().getMonth() +"/"+ warrantyArrayList.get(position).getExpiryDate().getDay());
+                        expireDateTextView.setText("Exp Date: " + warrantyArrayList.get(position).getExpiryDate().getYear() +"/"+ warrantyArrayList.get(position).getExpiryDate().getMonth() +"/"+ warrantyArrayList.get(position).getExpiryDate().getDay());
 
         TextView costTextView = (TextView) warrantyView.findViewById(R.id.warranty_cost);
                         costTextView.setText("Cost: " + warrantyArrayList.get(position).getCost());
 
         TextView notesTextView = (TextView) warrantyView.findViewById(R.id.warranty_notes);
-                        notesTextView.setText(warrantyArrayList.get(position).getNotes());
+                        notesTextView.setText("Notes:" + warrantyArrayList.get(position).getNotes());
 
-        ListView photoWarrantyListView = (ListView) warrantyView.findViewById(R.id.warranty_photos_list_view);
-        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-        photoWarrantyListView.setAdapter(photosAdapter);
+        if(photosArrayList != null) {
+            ListView photoWarrantyListView = (ListView) warrantyView.findViewById(R.id.warranty_photos_list_view);
+            photoWarrantyListView.setNestedScrollingEnabled(true);
+            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+            photoWarrantyListView.setAdapter(photosAdapter);
+        }
     }
 
     private void openWarrantyNameList(ArrayList<Warranty> warrantyList) {
+        currentCategory = Category.warrantyName;
         warrantyArrayList = warrantyList;
         WarrantyRowAdapter warrantyRowAdapter = new WarrantyRowAdapter(getApplicationContext(), warrantyList);
         listView.setAdapter(warrantyRowAdapter);
     }
 
     private void openMonthlyBillsCategoryList(final ArrayList<String> categoryList) {
+        currentCategory = Category.monthlyBillsList;
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
         YearArrayListAdapter yearArrayListAdapter = new YearArrayListAdapter(this, categoryList);
@@ -409,12 +475,14 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     }
 
     private void openMonthlyBillsMonthList(ArrayList<MonthlyBills> monthlyBillsList) {
+        currentCategory = Category.monthlyBillsMonth;
         this.monthlyBillsArrayList = monthlyBillsList;
         MonthlyBillsRowAdapter monthlyBillsRowAdapter = new MonthlyBillsRowAdapter(this, monthlyBillsList);
         listView.setAdapter(monthlyBillsRowAdapter);
     }
 
     private void openMonthlyBillsYearList(ArrayList<String> yearsList) {
+        currentCategory = Category.monthlyBillsYear;
         this.yearsMonthlyBillsArraylist = yearsList;
         YearsMonthlyBillsAdapter monthlyBillsRowAdapter = new YearsMonthlyBillsAdapter(this, yearsList);
         listView.setAdapter(monthlyBillsRowAdapter);
@@ -422,25 +490,29 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
 
     private void openMonthlyBillsItem(int position) {
+        currentCategory = Category.monthlyBillsItem;
         nestedScrollView.removeAllViews();
         View monthlyBillsView = getLayoutInflater().inflate(R.layout.monthly_bills, nestedScrollView, true);///
 
         TextView categoryTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_category);
-                        categoryTextView.setText(monthlyBillsArrayList.get(position).getCategory());
+                        categoryTextView.setText("Category: " + monthlyBillsArrayList.get(position).getCategory());
 
         TextView dateTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_month_year);
-                        dateTextView.setText(monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
+                        dateTextView.setText("Date: " + monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
 
         TextView sumTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_sum);
-                        sumTextView.setText(monthlyBillsArrayList.get(position).getSum()+"");
+                        sumTextView.setText("Sum: " + monthlyBillsArrayList.get(position).getSum()+"");
 
 
         TextView notesTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_notes);
-                        notesTextView.setText(monthlyBillsArrayList.get(position).getNotes());
+                        notesTextView.setText("Notes: " + monthlyBillsArrayList.get(position).getNotes());
 
-        ListView photoMonthlyBillsListView = (ListView) monthlyBillsView.findViewById(R.id.monthly_bills_photos_list_view);
-        PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-        photoMonthlyBillsListView.setAdapter(photosAdapter);
+        if(photosArrayList != null){
+            ListView photoMonthlyBillsListView = (ListView) monthlyBillsView.findViewById(R.id.monthly_bills_photos_list_view);
+            photoMonthlyBillsListView.setNestedScrollingEnabled(true);
+            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
+            photoMonthlyBillsListView.setAdapter(photosAdapter);
+        }
     }
 
 

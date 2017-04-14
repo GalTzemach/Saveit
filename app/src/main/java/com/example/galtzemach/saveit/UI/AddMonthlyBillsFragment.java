@@ -23,16 +23,8 @@ import android.widget.Toast;
 import com.example.galtzemach.saveit.BL.MonthlyBills;
 import com.example.galtzemach.saveit.BL.Salary;
 import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.BL.Salary;
-import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -342,8 +334,7 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
 
         Toast.makeText(getContext(), "Monthly bills successfully added", Toast.LENGTH_SHORT).show();
         mProgressDialog.dismiss();
-        MainActivity.dataBase.getCategoryPerUser(MainActivity.user_id);
-
+        MainActivity.fab.callOnClick();
     }
 
     @Override
