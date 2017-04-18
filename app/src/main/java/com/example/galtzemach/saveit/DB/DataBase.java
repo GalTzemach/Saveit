@@ -3,10 +3,10 @@ package com.example.galtzemach.saveit.DB;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.galtzemach.saveit.BL.MonthlyBills;
-import com.example.galtzemach.saveit.BL.Salary;
-import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.UI.DataReadyListener;
+import com.example.galtzemach.saveit.MonthlyBills.MonthlyBills;
+import com.example.galtzemach.saveit.Salary.Salary;
+import com.example.galtzemach.saveit.Warranty.Warranty;
+import com.example.galtzemach.saveit.DataReadyListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -111,9 +111,7 @@ public class DataBase{
                     }
                 });
             }
-        }
-
-        else {
+        } else {
 
             salary.setDownloadUriArr(null);
 
@@ -135,7 +133,7 @@ public class DataBase{
 
         final ArrayList<String> downloadArr = new ArrayList<>();
 
-        if (uploadUriArr != null) {
+        if (uploadUriArr.size() > 0) {
 
         //upload photo to storage
         for (int i = 0; i < uploadUriArr.size(); i++) {
@@ -168,7 +166,7 @@ public class DataBase{
                 }
             });
         }
-        } else if (uploadUriArr == null) {
+        } else /*if (uploadUriArr == null) */{
 
             warranty.setDownloadUriArr(null);
 
@@ -190,7 +188,7 @@ public class DataBase{
 
         final ArrayList<String> downloadArr = new ArrayList<>();
 
-        if (uploadUriArr != null) {
+        if (uploadUriArr.size() > 0) {
 
             //upload photo to storage
             for (int i = 0; i < uploadUriArr.size(); i++) {
@@ -222,7 +220,7 @@ public class DataBase{
                     }
                 });
             }
-        }  else if (uploadUriArr == null) {
+        }  else /*if (uploadUriArr == null)*/ {
 
         monthlyBills.setDownloadUriArr(null);
 

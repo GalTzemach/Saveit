@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.BL;
+package com.example.galtzemach.saveit.Warranty;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class WarrantyRowAdapter extends ArrayAdapter<Warranty> {
         nameTextView.setText(warrantiesArrayList.get(position).getName());
 
         TextView expDateTextView = (TextView) rowView.findViewById(R.id.w__row_exp_date);
-        expDateTextView.setText("EXP:" + warrantiesArrayList.get(position).getExpiryDate().getDate());
+        expDateTextView.setText("EXP Date: " + warrantiesArrayList.get(position).getExpiryDate().getYear() + "/" + warrantiesArrayList.get(position).getExpiryDate().getMonth() + "/" + MainActivity.getDayOfMonth(warrantiesArrayList.get(position).getExpiryDate()));
 
         TextView notesTextView = (TextView) rowView.findViewById(R.id.w_row_notes);
         notesTextView.setText(warrantiesArrayList.get(position).getNotes());

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
+    <color name="primary_light">#C5CAE9</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -8,14 +9,13 @@
     <color name="button">#6698FF</color>
     <color name="formBackground">#C2DFFF</color>
 
-    <color name="primary_light">#C5CAE9</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+
+    <color name="White">#FFFFFF</color>
     <color name="Red">#FF0000</color>
     <color name="Green">#00ff00</color>
-    <color name="White">#ffffff</color>
 </resources>
 
 

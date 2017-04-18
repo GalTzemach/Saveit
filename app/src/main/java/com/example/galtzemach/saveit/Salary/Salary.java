@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.BL;
+package com.example.galtzemach.saveit.Salary;
 
 import java.util.ArrayList;
 

@@ -1,8 +1,8 @@
-package com.example.galtzemach.saveit.UI;
+package com.example.galtzemach.saveit;
 
-import com.example.galtzemach.saveit.BL.MonthlyBills;
-import com.example.galtzemach.saveit.BL.Salary;
-import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.MonthlyBills.MonthlyBills;
+import com.example.galtzemach.saveit.Salary.Salary;
+import com.example.galtzemach.saveit.Warranty.Warranty;
 
 import java.util.ArrayList;
 

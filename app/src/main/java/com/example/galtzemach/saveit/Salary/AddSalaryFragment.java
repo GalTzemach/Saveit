@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.UI;
+package com.example.galtzemach.saveit.Salary;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,9 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.galtzemach.saveit.BL.MonthlyBills;
-import com.example.galtzemach.saveit.BL.Salary;
-import com.example.galtzemach.saveit.BL.Warranty;
+import com.example.galtzemach.saveit.MonthlyBills.MonthlyBills;
+import com.example.galtzemach.saveit.DataReadyListener;
+import com.example.galtzemach.saveit.Warranty.Warranty;
 import com.example.galtzemach.saveit.MainActivity;
 import com.example.galtzemach.saveit.R;
 
@@ -30,16 +30,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.galtzemach.saveit.R.layout.fragment_add_salary;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddMonthlyBillsFragment.OnFragmentInteractionListener} interface
+ * {@link AddSalaryFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AddMonthlyBillsFragment#newInstance} factory method to
+ * Use the {@link AddSalaryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddMonthlyBillsFragment extends Fragment implements DataReadyListener{
+public class AddSalaryFragment extends Fragment implements DataReadyListener {
+
+    private final String TAG = this.getClass().toString();
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -55,30 +59,25 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     private OnFragmentInteractionListener mListener;
 
     private View view;
+    private String employerField = null;
+    private int yearField = -1;
+    private int monthField = -1;
+    private float grossRevenueField = -1;
+    private  float netRevenueField = -1;
+    private String notesField;
 
-    private MonthlyBills.Category category;
-    private int year = -1;
-    private int month = -1;
-    private float sum = -1;
-    private String notes;
-
-    private Button addPhotoButton;
-    private Button removeAllPhotosButton;
-    private Button okButton;
-    private Spinner categorySpinner;
-    private EditText yearEditText;
-    private Spinner monthSpinner;
-    private EditText sumEditText;
-    private EditText notesEditText;
     private TextView numAddedTextView;
+    private Button removeAllPhotosButton;
+    private Button addPhotoButton;
 
     private ArrayList<Uri> uploadUriArr;
 
     private static final int CAMERA_INTENT = 1;
     private static final int GALLERY_INTENT = 2;
 
-    public AddMonthlyBillsFragment() {
-        // Required empty public constructor
+
+    public AddSalaryFragment() {
+
     }
 
     /**
@@ -87,11 +86,11 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AddMonthlyBillsFragment.
+     * @return A new instance of fragment AddSalaryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddMonthlyBillsFragment newInstance(String param1, String param2) {
-        AddMonthlyBillsFragment fragment = new AddMonthlyBillsFragment();
+    public static AddSalaryFragment newInstance(String param1, String param2) {
+        AddSalaryFragment fragment = new AddSalaryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -101,7 +100,9 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -113,32 +114,31 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
 
         // register as listener to DataBase
         MainActivity.dataBase.registerListener(this);
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_add_monthly_bills, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //get fields
-        categorySpinner = (Spinner) view.findViewById(R.id.m_category_spinner);
-        yearEditText = (EditText) view.findViewById(R.id.m_year);
-        monthSpinner = (Spinner) view.findViewById(R.id.m_month_spinner);
-        sumEditText = (EditText) view.findViewById(R.id.m_sum);
-        notesEditText = (EditText) view.findViewById(R.id.m_notes);
-        addPhotoButton = (Button) view.findViewById(R.id.m_add);
-        removeAllPhotosButton = (Button) view.findViewById(R.id.m_remove);
-        numAddedTextView = (TextView) view.findViewById(R.id.m_num_photos_added);
-        okButton = (Button) view.findViewById(R.id.m_ok);
+        //Inflate the layout for this fragment
+        view = inflater.inflate(fragment_add_salary, container, false);
 
+        //removeAllPhotosButton
+        removeAllPhotosButton = (Button) view.findViewById(R.id.s_remove_photos);
 
-        categorySpinner.setAdapter(new ArrayAdapter<MonthlyBills.Category>(getContext(), android.R.layout.simple_spinner_item, MonthlyBills.Category.values()));
+        //numAddedTextView
+        numAddedTextView = (TextView) view.findViewById(R.id.s_num_added_photos);
 
+        //addPhotoButton
+        addPhotoButton = (Button) view.findViewById(R.id.s_add_photos);
+
+        //monthSpinner
+        Spinner monthSpinner = (Spinner) view.findViewById(R.id.s_month_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.months_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         monthSpinner.setAdapter(adapter);
 
+        //addPhotoButton.setOnClickListener
         addPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -173,43 +173,124 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
             }
         });
 
+        //okButton
+        Button okButton = (Button) view.findViewById(R.id.s_ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkAllFields() ){
 
-                    createMonthlyBillsObject();
+                    createSalaryObject();
 
                 }
             }
         });
 
+
         return view;
     }
 
     private void photoFromGallery() {
+
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, GALLERY_INTENT);
+        this.startActivityForResult(galleryIntent, GALLERY_INTENT);
     }
 
     private void photoFromCamera() {
+
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_INTENT);
+
     }
 
-    private void createMonthlyBillsObject() {
+    private void createSalaryObject() {
 
         mProgressDialog.setTitle("Please wait");
         mProgressDialog.setMessage("Uploading to cloud...");
         mProgressDialog.show();
 
-        MonthlyBills newMonthlyBills = new MonthlyBills(category, year, month, sum, notes);
-        MainActivity.dataBase.createNewMonthlyBills(MainActivity.user_id, newMonthlyBills, uploadUriArr);
+        Salary newSalary = new Salary(employerField, yearField, monthField, grossRevenueField, netRevenueField, notesField);
+        MainActivity.dataBase.createNewSalary(MainActivity.user_id, newSalary, uploadUriArr);
+    }
+
+    private boolean checkAllFields() {
+        boolean resBool = true;
+
+        //employer
+        EditText employer = (EditText) view.findViewById(R.id.s_employer);
+        if (employer.getText().length() != 0)
+            employerField = employer.getText().toString();
+
+        //year
+        EditText year = (EditText) view.findViewById(R.id.s_year);
+        if (year.getText().length() != 0)
+            yearField = Integer.parseInt(year.getText().toString());
+
+        //month
+        Spinner monthSpinner = (Spinner) view.findViewById(R.id.s_month_spinner);
+
+        //grossRevenue
+        EditText grossRevenue = (EditText) view.findViewById(R.id.s_gross_revenue);
+        if (grossRevenue.getText().length() != 0)
+            grossRevenueField = Float.parseFloat(grossRevenue.getText().toString());
+
+        //netRevenue
+        EditText netRevenue = (EditText) view.findViewById(R.id.s_net_revenue);
+        if (netRevenue.getText().length() != 0)
+            netRevenueField = Float.parseFloat(netRevenue.getText().toString());
+
+        //notes
+        EditText notes = (EditText) view.findViewById(R.id.s_row_notes);
+
+        Calendar calendar = Calendar.getInstance();
+
+        //check employer
+        if (employerField == null) {
+            employer.setHintTextColor(Color.RED);
+            resBool = false;
+        }
+
+        //check year
+        if (yearField == -1) {
+            year.setHintTextColor(Color.RED);
+            resBool = false;
+        } else if (yearField > calendar.get(Calendar.YEAR) || yearField < calendar.get(Calendar.YEAR) - 120) {
+            year.setTextColor(Color.RED);
+            resBool = false;
+        } else
+            year.setTextColor(Color.BLACK);
+
+        //check gross & net revenue
+        if(grossRevenueField == -1 && netRevenueField == -1){
+            grossRevenue.setHintTextColor(Color.RED);
+            netRevenue.setHintTextColor(Color.RED);
+            resBool = false;
+        }else if (grossRevenueField == -1){
+            grossRevenue.setHintTextColor(Color.RED);
+            resBool = false;
+        }else if (netRevenueField == -1) {
+            netRevenue.setHintTextColor(Color.RED);
+            resBool = false;
+        }else if (grossRevenueField < netRevenueField) {
+            grossRevenue.setTextColor(Color.RED);
+            netRevenue.setTextColor(Color.RED);
+            resBool = false;
+        }else{
+            grossRevenue.setTextColor(Color.BLACK);
+            netRevenue.setTextColor(Color.BLACK);
+        }
+
+        monthField = Integer.parseInt(monthSpinner.getSelectedItem().toString());
+
+        notesField = notes.getText().toString();
+
+        return resBool;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
@@ -228,46 +309,6 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
             addPhotoButton.setText("Add more photos");
         }
 
-    }
-
-    private boolean checkAllFields() {
-        boolean resBool = true;
-
-        //category
-        category = (MonthlyBills.Category) categorySpinner.getSelectedItem();
-
-        //year
-        Calendar calendar = Calendar.getInstance();
-
-        if (yearEditText.getText().length() != 0)
-            year = Integer.parseInt(yearEditText.getText().toString());
-
-        if (year == -1) {
-            yearEditText.setHintTextColor(Color.RED);
-            resBool = false;
-        } else if (year > calendar.get(Calendar.YEAR) || year < calendar.get(Calendar.YEAR) - 120) {
-            yearEditText.setTextColor(Color.RED);
-            resBool = false;
-        } else {
-            yearEditText.setTextColor(Color.BLACK);
-        }
-
-        //month
-        month = Integer.parseInt(monthSpinner.getSelectedItem().toString());
-
-        //sum
-        if(sumEditText.getText().length() != 0)
-            sum = Float.parseFloat(sumEditText.getText().toString());
-
-        if(sum == -1){
-            sumEditText.setHintTextColor(Color.RED);
-            resBool = false;
-        }
-
-        //notes
-        notes = notesEditText.getText().toString();
-
-        return resBool;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -297,6 +338,12 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     @Override
     public void onCreateSalaryComplete() {
 
+        Toast.makeText(getContext(), "Salary successfully added", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+
+        MainActivity.currentMode = MainActivity.Mode.pushh;
+        MainActivity.fab.callOnClick();
+        uploadUriArr.clear();
     }
 
     @Override
@@ -327,9 +374,6 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     @Override
     public void onCreateMonthlyBillsComplete() {
 
-        Toast.makeText(getContext(), "Monthly bills successfully added", Toast.LENGTH_SHORT).show();
-        mProgressDialog.dismiss();
-        MainActivity.fab.callOnClick();
     }
 
     @Override
@@ -346,6 +390,7 @@ public class AddMonthlyBillsFragment extends Fragment implements DataReadyListen
     public void onMonthlyBillsListReady(ArrayList<MonthlyBills> monthlyBillsList) {
 
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

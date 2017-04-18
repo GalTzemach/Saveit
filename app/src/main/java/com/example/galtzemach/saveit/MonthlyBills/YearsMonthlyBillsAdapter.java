@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.BL;
+package com.example.galtzemach.saveit.MonthlyBills;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -12,13 +12,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class YearsWarrantyAdapter extends ArrayAdapter {
+public class YearsMonthlyBillsAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final ArrayList<String> yearsArrayList;
 
 
-    public YearsWarrantyAdapter(Activity context, ArrayList<String> yearArrayList) {
+    public YearsMonthlyBillsAdapter(Activity context, ArrayList<String> yearArrayList) {
         super(context, R.layout.year_row, yearArrayList);
         this.context = context;
         this.yearsArrayList = yearArrayList;
@@ -32,7 +32,8 @@ public class YearsWarrantyAdapter extends ArrayAdapter {
         TextView yearTextView = (TextView) rowView.findViewById(R.id.y_year);
         yearTextView.setText(yearsArrayList.get(position));
 
-
         return rowView;
     }
+
+
 }

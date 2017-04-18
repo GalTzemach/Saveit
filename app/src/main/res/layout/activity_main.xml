@@ -21,20 +21,45 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:titleEnabled="false">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" >
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                android:layout_gravity="top">
 
-                <SearchView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
+                <!--<SearchView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content">-->
+                <!--</SearchView>-->
             </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                >
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Salary" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Warranty" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M.Bills" />
+            </android.support.design.widget.TabLayout>
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -53,7 +78,8 @@
             <ListView
                 android:id="@+id/main_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                />
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
@@ -62,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/NestedScrollView_main"
-        app:layout_anchorGravity="top|end"
+        app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_add_white" />
 
     <android.support.design.widget.BottomNavigationView
@@ -72,6 +98,8 @@
         android:layout_gravity="bottom"
         app:itemBackground="@color/colorPrimary"
         app:itemTextColor="@color/White"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation"
+        android:visibility="invisible"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

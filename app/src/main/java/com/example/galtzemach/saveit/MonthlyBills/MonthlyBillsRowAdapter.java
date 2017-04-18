@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.BL;
+package com.example.galtzemach.saveit.MonthlyBills;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -31,7 +31,7 @@ public class MonthlyBillsRowAdapter extends ArrayAdapter<MonthlyBills> {
         View rowView = LayoutInflater.from(context).inflate(R.layout.monthly_bills_row, null, true);
 
         TextView categoryMYTextView = (TextView) rowView.findViewById(R.id.m_row_category_m_y);
-        categoryMYTextView.setText(monthlyBillsArrayList.get(position).getCategory() +" "+ monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
+        categoryMYTextView.setText(monthlyBillsArrayList.get(position).getMonth()+"/"+monthlyBillsArrayList.get(position).getYear());
 
         TextView sumTextView = (TextView) rowView.findViewById(R.id.m_row_sum);
         sumTextView.setText(monthlyBillsArrayList.get(position).getSum()+"");///get sum

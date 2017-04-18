@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="months_array">
         <item>1</item>
         <item>2</item>
@@ -14,13 +15,6 @@
         <item>11</item>
         <item>12</item>
     </string-array>
-
-    <integer-array name="months_integer_array">
-        <item>2</item>
-        <item>8</item>
-        <item>10</item>
-        <item>16</item>
-    </integer-array>
 
 </resources>
 

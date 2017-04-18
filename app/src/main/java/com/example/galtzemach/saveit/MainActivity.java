@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -20,34 +21,29 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.galtzemach.saveit.BL.MonthlyBills;
-import com.example.galtzemach.saveit.BL.MonthlyBillsRowAdapter;
-import com.example.galtzemach.saveit.BL.PhotosAdapter;
-import com.example.galtzemach.saveit.BL.Salary;
-import com.example.galtzemach.saveit.BL.SalaryRowAdapter;
-import com.example.galtzemach.saveit.BL.Warranty;
-import com.example.galtzemach.saveit.BL.WarrantyRowAdapter;
-import com.example.galtzemach.saveit.BL.YearsMonthlyBillsAdapter;
-import com.example.galtzemach.saveit.BL.YearsSalaryAdapter;
-import com.example.galtzemach.saveit.BL.YearsWarrantyAdapter;
 import com.example.galtzemach.saveit.DB.DataBase;
-import com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment;
-import com.example.galtzemach.saveit.UI.AddSalaryFragment;
-import com.example.galtzemach.saveit.UI.AddWarrantyFragment;
-import com.example.galtzemach.saveit.UI.DataReadyListener;
-import com.example.galtzemach.saveit.UI.YearArrAdapter;
-import com.example.galtzemach.saveit.UI.YearArrayListAdapter;
-import com.example.galtzemach.saveit.UI.dummy.DummyContent;
-import com.example.galtzemach.saveit.UI.dummy.SalaryFragment;
+import com.example.galtzemach.saveit.MonthlyBills.AddMonthlyBillsFragment;
+import com.example.galtzemach.saveit.MonthlyBills.MonthlyBills;
+import com.example.galtzemach.saveit.MonthlyBills.MonthlyBillsRowAdapter;
+import com.example.galtzemach.saveit.MonthlyBills.YearsMonthlyBillsAdapter;
+import com.example.galtzemach.saveit.Salary.AddSalaryFragment;
+import com.example.galtzemach.saveit.Salary.Salary;
+import com.example.galtzemach.saveit.Salary.SalaryRowAdapter;
+import com.example.galtzemach.saveit.Salary.YearsSalaryAdapter;
+import com.example.galtzemach.saveit.Warranty.AddWarrantyFragment;
+import com.example.galtzemach.saveit.Warranty.Warranty;
+import com.example.galtzemach.saveit.Warranty.WarrantyRowAdapter;
+import com.example.galtzemach.saveit.Warranty.YearsWarrantyAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 
-import static com.example.galtzemach.saveit.UI.dummy.SalaryFragment.OnListFragmentInteractionListener;
 
-
-public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener, AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
+public class MainActivity extends AppCompatActivity implements AddSalaryFragment.OnFragmentInteractionListener, AddWarrantyFragment.OnFragmentInteractionListener, AddMonthlyBillsFragment.OnFragmentInteractionListener, DataReadyListener {
 
     private boolean isFirst = true;
     private final String TAG = this.getClass().toString();
@@ -61,26 +57,24 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private ArrayList<Salary> salaryArrayList;
     private ArrayList<Warranty> warrantyArrayList;
     private ArrayList<MonthlyBills> monthlyBillsArrayList;
-    private ArrayList<String> yearsMonthlyBillsArraylist;
+    private ArrayList<String> yearsMonthlyBillsArrayList;
 
     private enum Category {salaryList, salaryMonth, salaryItem, warrantyList, warrantyName, warrantyItem, monthlyBillsList, monthlyBillsYear, monthlyBillsMonth, monthlyBillsItem};
     private Category currentCategory;
-    private enum Mode {pull, pushh};
-    private Mode currentMode;
+    public enum Mode {pull, pushh};
+    public static Mode currentMode;
 
 
     public static FloatingActionButton fab;
     private BottomNavigationView bottomNavigationView;
+    private TabLayout tabLayout;
     private NestedScrollView nestedScrollView;
     private ListView listView;
     private AddSalaryFragment addSalaryFragment;
     private AddWarrantyFragment addWarrantyFragment;
     private AddMonthlyBillsFragment addMonthlyBillsFragment;
 
-    private ArrayList<String> yearArrayList;
     private ArrayList<String> photosArrayList;
-    private String[] yearArr;
-    private String[] emptyArr = new String[0];
 
     public static String user_id;
 
@@ -139,16 +133,17 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             }
         };
 
-        fillArrays();
-
         listView = (ListView) findViewById(R.id.main_list_view);
         listView.setPadding(15, 15, 15, 15);
+        listView.setNestedScrollingEnabled(true);
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.NestedScrollView_main);
         nestedScrollView.setNestedScrollingEnabled(true);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation_main);
-//        bottomNavigationView.getMenu().getItem(0).setChecked(true);
+        bottomNavigationView.setNestedScrollingEnabled(true);
+
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -270,8 +265,66 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
             }
         });
 
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        currentCategory = Category.salaryList;
+
+                        if (currentMode == Mode.pushh)
+                            openAddSalaryFragment();
+                        else {
+                            dataBase.getYearsPerUser_salary(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
+                        break;
+
+                    case 1:
+                        currentCategory = Category.warrantyList;
+
+                        if (currentMode == Mode.pushh)
+                            openAddWarrantyFragment();
+                        else {
+                            dataBase.getYearsPerUser_Warranty(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
+                        break;
+
+                    case 2:
+                        currentCategory = Category.monthlyBillsList;
+
+                        if (currentMode == Mode.pushh)
+                            openAddMonthlyBillsFragment();
+                        else {
+                            dataBase.getCategoryPerUser(user_id);
+
+                            mProgressDialog.setMessage("Loading data..");
+                            mProgressDialog.show();
+                        }
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         initialDefault();
     }
+
 
     @Override
     protected void onStart() {
@@ -399,8 +452,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         TextView mYDateTextView = (TextView) salaryView.findViewById(R.id.salary_m_y);
                         mYDateTextView.setText("Date: " + salaryArrayList.get(position).getMonth() + "/" + salaryArrayList.get(position).getYear());
 
-        TextView grossNetTextView = (TextView) salaryView.findViewById(R.id.salary_gross_net);
-                        grossNetTextView.setText(salaryArrayList.get(position).getGrossRevenue() + "$  |  " + salaryArrayList.get(position).getNetRevenue() + "$");
+        TextView grossTextView = (TextView) salaryView.findViewById(R.id.salary_gross);
+        grossTextView.setText("Gross: " + salaryArrayList.get(position).getGrossRevenue());
+
+        TextView netTextView = (TextView) salaryView.findViewById(R.id.salary_net);
+        netTextView.setText("Net: " + salaryArrayList.get(position).getNetRevenue());
 
         TextView notesTextView = (TextView) salaryView.findViewById(R.id.salary_notes);
                         notesTextView.setText("Notes: " + salaryArrayList.get(position).getNotes());
@@ -408,8 +464,8 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         if(salaryArrayList.get(position).getDownloadUriArr() != null) {
             ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
             photoSalaryListView.setNestedScrollingEnabled(true);
-            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
-            photoSalaryListView.setAdapter(photosAdapter);
+            PhotosAdapter salaryPhotosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
+            photoSalaryListView.setAdapter(salaryPhotosAdapter);
         }
     }
 
@@ -447,19 +503,19 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
     private void openWarrantyItem(ArrayList<Warranty> warrantyArrayList, int position) {
         currentCategory = Category.warrantyItem;
         nestedScrollView.removeAllViews();
-        View warrantyView = getLayoutInflater().inflate(R.layout.warranty, nestedScrollView, true);///
+        View warrantyView = getLayoutInflater().inflate(R.layout.warranty, nestedScrollView, true);
 
         TextView nameTextView = (TextView) warrantyView.findViewById(R.id.warranty_name);
                         nameTextView.setText("Name: " + warrantyArrayList.get(position).getName().toString());
 
+        TextView purchaseDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_purchas_date);
+        purchaseDateTextView.setText("Purchase Date: " + warrantyArrayList.get(position).getPurchaseDate().getYear() +"/"+ (warrantyArrayList.get(position).getPurchaseDate().getMonth()+1) +"/"+ getDayOfMonth(warrantyArrayList.get(position).getPurchaseDate()));
+
         TextView periodInMonthsTextView = (TextView) warrantyView.findViewById(R.id.warranty_in_months);
                         periodInMonthsTextView.setText("Period in months: " + warrantyArrayList.get(position).getPeriodInMonths());
 
-        TextView purchaseDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_purchas_date);
-                        purchaseDateTextView.setText("purchase Date: " + warrantyArrayList.get(position).getPurchaseDate().getYear() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getMonth() +"/"+ warrantyArrayList.get(position).getPurchaseDate().getDay() + "  | ");
-
         TextView expireDateTextView = (TextView) warrantyView.findViewById(R.id.warranty_exp_date);
-                        expireDateTextView.setText("Exp Date: " + warrantyArrayList.get(position).getExpiryDate().getYear() +"/"+ warrantyArrayList.get(position).getExpiryDate().getMonth() +"/"+ warrantyArrayList.get(position).getExpiryDate().getDay());
+                        expireDateTextView.setText("Exp Date: " + warrantyArrayList.get(position).getExpiryDate().getYear() +"/"+ (warrantyArrayList.get(position).getExpiryDate().getMonth()+1) +"/"+ getDayOfMonth(warrantyArrayList.get(position).getExpiryDate()));
 
         TextView costTextView = (TextView) warrantyView.findViewById(R.id.warranty_cost);
                         costTextView.setText("Cost: " + warrantyArrayList.get(position).getCost());
@@ -467,11 +523,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         TextView notesTextView = (TextView) warrantyView.findViewById(R.id.warranty_notes);
                         notesTextView.setText("Notes:" + warrantyArrayList.get(position).getNotes());
 
-        if(photosArrayList != null) {
+        if(warrantyArrayList.get(position).getDownloadUriArr() != null) {
             ListView photoWarrantyListView = (ListView) warrantyView.findViewById(R.id.warranty_photos_list_view);
             photoWarrantyListView.setNestedScrollingEnabled(true);
-            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-            photoWarrantyListView.setAdapter(photosAdapter);
+            PhotosAdapter warrantyPhotosAdapter = new PhotosAdapter(MainActivity.this, warrantyArrayList.get(position).getDownloadUriArr());
+            photoWarrantyListView.setAdapter(warrantyPhotosAdapter);
         }
     }
 
@@ -486,18 +542,19 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         currentCategory = Category.monthlyBillsList;
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearArrayListAdapter yearArrayListAdapter = new YearArrayListAdapter(this, categoryList);
+        YearsMonthlyBillsAdapter yearArrayListAdapter = new YearsMonthlyBillsAdapter(this, categoryList);
         listView.setAdapter(yearArrayListAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                final String monthlyBillsCategory = categoryList.get(position);
                 dataBase.getYearslistPerUserAndCategory(user_id, categoryList.get(position));
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-                        dataBase.getMonthlyBillsListPerUserAndYear(user_id, Integer.parseInt(yearsMonthlyBillsArraylist.get(position)), categoryList.get(position));
+                        dataBase.getMonthlyBillsListPerUserAndYear(user_id, Integer.parseInt(yearsMonthlyBillsArrayList.get(position)), monthlyBillsCategory);
 
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -520,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     private void openMonthlyBillsYearList(ArrayList<String> yearsList) {
         currentCategory = Category.monthlyBillsYear;
-        this.yearsMonthlyBillsArraylist = yearsList;
+        this.yearsMonthlyBillsArrayList = yearsList;
         YearsMonthlyBillsAdapter monthlyBillsRowAdapter = new YearsMonthlyBillsAdapter(this, yearsList);
         listView.setAdapter(monthlyBillsRowAdapter);
     }
@@ -544,44 +601,19 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         TextView notesTextView = (TextView) monthlyBillsView.findViewById(R.id.monthly_bills_notes);
                         notesTextView.setText("Notes: " + monthlyBillsArrayList.get(position).getNotes());
 
-        if(photosArrayList != null){
+        if(monthlyBillsArrayList.get(position).getDownloadUriArr() != null){
             ListView photoMonthlyBillsListView = (ListView) monthlyBillsView.findViewById(R.id.monthly_bills_photos_list_view);
             photoMonthlyBillsListView.setNestedScrollingEnabled(true);
-            PhotosAdapter photosAdapter = new PhotosAdapter(MainActivity.this, photosArrayList);
-            photoMonthlyBillsListView.setAdapter(photosAdapter);
+            PhotosAdapter monthlyBillsPhotosAdapter = new PhotosAdapter(MainActivity.this, monthlyBillsArrayList.get(position).getDownloadUriArr());
+            photoMonthlyBillsListView.setAdapter(monthlyBillsPhotosAdapter);
         }
     }
 
-
-
-    private void fillArrays() {
-        yearArrayList = new ArrayList<>();
-        yearArrayList.add("2016");
-        yearArrayList.add("2015");
-        yearArrayList.add("2014");
-        yearArrayList.add("2013");
-        yearArrayList.add("2012");
-        yearArrayList.add("2011");
-
-        photosArrayList = new ArrayList<>();
-        photosArrayList.add("R.drawable.ic_dashboard_black_24dp");
-
-        yearArr = new String[]{"2017", "2016", "2015", "2014"};
+    public static int getDayOfMonth(Date aDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        return cal.get(Calendar.DAY_OF_MONTH);
     }
-
-    private void clearList() {
-        nestedScrollView.removeAllViews();
-        nestedScrollView.addView(listView);
-        YearArrAdapter emptyAdapter = new YearArrAdapter(this, emptyArr);
-        listView.setAdapter(emptyAdapter);
-    }
-
-    private void openFragmentListTest() {
-        nestedScrollView.removeAllViews();
-        SalaryFragment salaryFragment = SalaryFragment.newInstance(1);
-        getSupportFragmentManager().beginTransaction().add(nestedScrollView.getId(), salaryFragment).commit();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -605,11 +637,10 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        if(id == R.id.action_exit){
+            finish();
 
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -619,10 +650,6 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
         mAuth.signOut();
     }
 
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -688,8 +715,11 @@ public class MainActivity extends AppCompatActivity implements OnListFragmentInt
 
     @Override
     public void onYearsListReady_MonthlyBills(ArrayList<String> yearsList) {
-
         mProgressDialog.dismiss();
+        HashSet<String> hashSet = new HashSet<String>();
+        hashSet.addAll(yearsList);
+        yearsList.clear();
+        yearsList.addAll(hashSet);
         openMonthlyBillsYearList(yearsList);
     }
 

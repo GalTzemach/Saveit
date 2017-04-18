@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="20dp"
     android:background="@color/formBackground"
-    tools:context="com.example.galtzemach.saveit.UI.AddMonthlyBillsFragment">
+    tools:context="com.example.galtzemach.saveit.MonthlyBills.AddMonthlyBillsFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

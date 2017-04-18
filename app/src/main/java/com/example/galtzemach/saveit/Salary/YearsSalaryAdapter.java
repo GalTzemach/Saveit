@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.BL;
+package com.example.galtzemach.saveit.Salary;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
