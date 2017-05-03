@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -59,13 +60,13 @@ public class PhotosAdapter extends ArrayAdapter<String>{
                 .into(photoImageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
-//                        Toast.makeText(getContext(), "Photo " + (position+1) + " Success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "A Photo " + (position+1) + " Success", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
 
                     @Override
                     public void onError() {
-//                        Toast.makeText(getContext(), "Photo " + (position+1) + " Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "A Photo " + (position+1) + " Error", Toast.LENGTH_SHORT).show();
                     }
                 });
 

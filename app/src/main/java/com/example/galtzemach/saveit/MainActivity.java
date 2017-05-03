@@ -465,6 +465,26 @@ public class MainActivity extends AppCompatActivity implements AddSalaryFragment
         if(salaryArrayList.get(position).getDownloadUriArr() != null) {
             ListView photoSalaryListView = (ListView) salaryView.findViewById(R.id.salary_photos_list_view);
             photoSalaryListView.setNestedScrollingEnabled(true);
+
+
+//            ImageView[] imageViewsArr = new ImageView[salaryArrayList.get(position).getDownloadUriArr().size()];
+//            for (int i =0; i<imageViewsArr.length; i++) {
+//                final int finalI = i;
+//                imageViewsArr[i] = new ImageView(this);
+//                Picasso.with(getApplicationContext()).load(salaryArrayList.get(position).getDownloadUriArr().get(i)).into(imageViewsArr[i], new com.squareup.picasso.Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        Toast.makeText(getApplicationContext(), "Photo " + (finalI+1) + " Success", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        Toast.makeText(getApplicationContext(), "Photo " + (finalI+1) + " Error", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+
+
             PhotosAdapter salaryPhotosAdapter = new PhotosAdapter(MainActivity.this, salaryArrayList.get(position).getDownloadUriArr());
             photoSalaryListView.setAdapter(salaryPhotosAdapter);
         }
