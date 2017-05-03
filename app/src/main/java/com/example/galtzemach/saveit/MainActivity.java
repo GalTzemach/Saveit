@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.galtzemach.saveit.DB.DataBase;
 import com.example.galtzemach.saveit.MonthlyBills.AddMonthlyBillsFragment;
+import com.example.galtzemach.saveit.MonthlyBills.CategoryMonthlyBillsAdapter;
 import com.example.galtzemach.saveit.MonthlyBills.MonthlyBills;
 import com.example.galtzemach.saveit.MonthlyBills.MonthlyBillsRowAdapter;
 import com.example.galtzemach.saveit.MonthlyBills.YearsMonthlyBillsAdapter;
@@ -542,8 +543,9 @@ public class MainActivity extends AppCompatActivity implements AddSalaryFragment
         currentCategory = Category.monthlyBillsList;
         nestedScrollView.removeAllViews();
         nestedScrollView.addView(listView);
-        YearsMonthlyBillsAdapter yearArrayListAdapter = new YearsMonthlyBillsAdapter(this, categoryList);
-        listView.setAdapter(yearArrayListAdapter);
+        CategoryMonthlyBillsAdapter categoryMonthlyBillsAdapter = new CategoryMonthlyBillsAdapter(this, categoryList);
+//        YearsMonthlyBillsAdapter yearArrayListAdapter = new YearsMonthlyBillsAdapter(this, categoryList);
+        listView.setAdapter(categoryMonthlyBillsAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -559,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements AddSalaryFragment
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                openMonthlyBillsItem(position);
+                                openMonthlyBillsItem(i);
                             }
                         });
                     }

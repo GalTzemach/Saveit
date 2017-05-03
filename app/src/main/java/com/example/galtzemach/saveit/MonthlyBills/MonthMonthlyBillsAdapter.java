@@ -19,7 +19,7 @@ public class MonthMonthlyBillsAdapter extends ArrayAdapter<String> {
 
 
     public MonthMonthlyBillsAdapter(Activity context, ArrayList<String> yearArrayList) {
-        super(context, R.layout.year_row, yearArrayList);
+        super(context, R.layout.one_row, yearArrayList);
         this.context = context;
         this.yearsArrayList = yearArrayList;
     }
@@ -27,7 +27,7 @@ public class MonthMonthlyBillsAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View rowView = context.getLayoutInflater().inflate(R.layout.year_row, null, true);
+        View rowView = context.getLayoutInflater().inflate(R.layout.one_row, null, true);
 
         TextView yearTextView = (TextView) rowView.findViewById(R.id.y_year);
         yearTextView.setText(yearsArrayList.get(position));

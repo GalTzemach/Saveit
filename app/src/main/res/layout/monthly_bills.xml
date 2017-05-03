@@ -16,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textSize="@dimen/first_row_list_view"
+        android:textSize="@dimen/second_row_list_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textSize="@dimen/first_row_list_view"
+        android:textSize="@dimen/second_row_list_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/monthly_bills_category" />
 
@@ -40,7 +40,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textSize="@dimen/first_row_list_view"
+        android:textSize="@dimen/second_row_list_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/monthly_bills_month_year" />
 
@@ -52,7 +52,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textSize="@dimen/first_row_list_view"
+        android:textSize="@dimen/second_row_list_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/monthly_bills_sum" />
 

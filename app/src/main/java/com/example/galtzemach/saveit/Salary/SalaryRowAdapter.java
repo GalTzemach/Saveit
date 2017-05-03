@@ -20,7 +20,7 @@ public class SalaryRowAdapter extends ArrayAdapter<Salary> {
 
 
     public SalaryRowAdapter(Context context, ArrayList<Salary> salariesArrayList) {
-        super(context, R.layout.year_row, salariesArrayList);
+        super(context, R.layout.one_row, salariesArrayList);
 
         this.context = context;
         this.salariesArrayList = salariesArrayList;
@@ -34,10 +34,13 @@ public class SalaryRowAdapter extends ArrayAdapter<Salary> {
         View rowView=  LayoutInflater.from(this.context).inflate(R.layout.salalry_row, null, true);
 
         TextView yearTextView = (TextView) rowView.findViewById(R.id.s_row_month);
-        yearTextView.setText("Month: " + salariesArrayList.get(position).getMonth());
+        yearTextView.setText("Month " + salariesArrayList.get(position).getMonth());
 
-        TextView grossNetTextView = (TextView) rowView.findViewById(R.id.s_row_gross_net);
-        grossNetTextView.setText(salariesArrayList.get(position).getGrossRevenue() + "  |  " +salariesArrayList.get(position).getNetRevenue());
+        TextView grossTextView = (TextView) rowView.findViewById(R.id.s_row_gross);
+        grossTextView.setText("Gross: " + salariesArrayList.get(position).getGrossRevenue());
+
+        TextView NetTextView = (TextView) rowView.findViewById(R.id.s_row_net);
+        NetTextView.setText("Net: " + salariesArrayList.get(position).getNetRevenue());
 
         TextView notesTextView = (TextView) rowView.findViewById(R.id.s_row_notes);
         notesTextView.setText(salariesArrayList.get(position).getNotes());

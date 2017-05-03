@@ -1,4 +1,4 @@
-package com.example.galtzemach.saveit.Salary;
+package com.example.galtzemach.saveit.MonthlyBills;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -12,13 +12,13 @@ import com.example.galtzemach.saveit.R;
 
 import java.util.ArrayList;
 
-public class YearsSalaryAdapter extends ArrayAdapter<String> {
+public class CategoryMonthlyBillsAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final ArrayList<String> yearsArrayList;
 
 
-    public YearsSalaryAdapter(Activity context, ArrayList<String> yearArrayList) {
+    public CategoryMonthlyBillsAdapter(Activity context, ArrayList<String> yearArrayList) {
         super(context, R.layout.one_row, yearArrayList);
         this.context = context;
         this.yearsArrayList = yearArrayList;
